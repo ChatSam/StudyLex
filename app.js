@@ -18,46 +18,10 @@
  */
 var questions = [
     {
-        "Reindeer have very thick coats, how many hairs per square inch do they have?": [
-            "13,000",
-            "1,200",
-            "5,000",
-            "700",
-            "1,000",
-            "120,000"
-        ]
-    },
-    {
-        "The 1964 classic Rudolph The Red Nosed Reindeer was filmed in:": [
-            "Japan",
-            "United States",
-            "Finland",
-            "Germany"
-        ]
-    },
-    {
-        "Santas reindeer are cared for by one of the Christmas elves, what is his name?": [
-            "Wunorse Openslae",
-            "Alabaster Snowball",
-            "Bushy Evergreen",
-            "Pepper Minstix"
-        ]
-    },
-    {
-        "If all of Santas reindeer had antlers while pulling his Christmas sleigh, they would all be:": [
-            "Girls",
-            "Boys",
-            "Girls and boys",
-            "No way to tell"
-        ]
-    },
-    {
-        "What do Reindeer eat?": [
-            "Lichen",
-            "Grasses",
-            "Leaves",
-            "Berries"
-        ]
+        question: "What color do red and blue combine to make",
+        answer: "purple",
+        hint: "this is a hint",
+        more: "roses are red, violets are blue"
     }
 ];
 
@@ -180,9 +144,8 @@ function onSessionEnded(sessionEndedRequest, session) {
 
 // ------- Skill specific business logic -------
 
-var ANSWER_COUNT = 4;
-var GAME_LENGTH = 5;
-var CARD_TITLE = "Trivia"; // Be sure to change this for your skill.
+var GAME_LENGTH = 1;
+var CARD_TITLE = "Studylexa"; // Be sure to change this for your skill.
 
 function getWelcomeResponse(callback) {
     var sessionAttributes = {},
@@ -191,169 +154,119 @@ function getWelcomeResponse(callback) {
         shouldEndSession = false,
 
         gameQuestions = populateGameQuestions(),
-        correctAnswerIndex = Math.floor(Math.random() * (ANSWER_COUNT)), // Generate a random index for the correct answer, from 0 to 3
-        roundAnswers = populateRoundAnswers(gameQuestions, 0, correctAnswerIndex),
+        currentQuestion = gameQuestions[0],
+        spokenQuestion = currentQuestion.question;
+        
+    speechOutput = "Question 1. " + spokenQuestion + ". ";
 
-        currentQuestionIndex = 0,
-        spokenQuestion = Object.keys(questions[gameQuestions[currentQuestionIndex]])[0],
-        repromptText = "Question 1. " + spokenQuestion + " ",
-
-        i, j;
-
-    for (i = 0; i < ANSWER_COUNT; i++) {
-        repromptText += (i+1).toString() + ". " + roundAnswers[i] + ". "
-    }
-    speechOutput += repromptText;
     sessionAttributes = {
-        "speechOutput": repromptText,
-        "repromptText": repromptText,
-        "currentQuestionIndex": currentQuestionIndex,
-        "correctAnswerIndex": correctAnswerIndex + 1,
+        "speechOutput": speechOutput,
+        "repromptText": speechOutput,
+        "currentQuestion": currentQuestion,
+        "askedQuestions": 0,
         "questions": gameQuestions,
         "score": 0,
-        "correctAnswerText":
-            questions[gameQuestions[currentQuestionIndex]][Object.keys(questions[gameQuestions[currentQuestionIndex]])[0]][0]
     };
     callback(sessionAttributes,
-        buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, shouldEndSession));
+        buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, shouldEndSession));
 }
 
 function populateGameQuestions() {
-    var gameQuestions = [];
-    var indexList = [];
-    var index = questions.length;
+    // var gameQuestions = [];
+    // var indexList = [];
+    // var index = questions.length;
 
-    if (GAME_LENGTH > index){
-        throw "Invalid Game Length.";
-    }
+    // if (GAME_LENGTH > index){
+    //     throw "Invalid Game Length.";
+    // }
 
-    for (var i = 0; i < questions.length; i++){
-        indexList.push(i);
-    }
+    // for (var i = 0; i < questions.length; i++){
+    //     indexList.push(i);
+    // }
 
-    // Pick GAME_LENGTH random questions from the list to ask the user, make sure there are no repeats.
-    for (var j = 0; j < GAME_LENGTH; j++){
-        var rand = Math.floor(Math.random() * index);
-        index -= 1;
+    // // Pick GAME_LENGTH random questions from the list to ask the user, make sure there are no repeats.
+    // for (var j = 0; j < GAME_LENGTH; j++){
+    //     var rand = Math.floor(Math.random() * index);
+    //     index -= 1;
 
-        var temp = indexList[index];
-        indexList[index] = indexList[rand];
-        indexList[rand] = temp;
-        gameQuestions.push(indexList[index]);
-    }
+    //     var temp = indexList[index];
+    //     indexList[index] = indexList[rand];
+    //     indexList[rand] = temp;
+    //     gameQuestions.push(indexList[index]);
+    // }
 
-    return gameQuestions;
-}
+    // return gameQuestions;
 
-function populateRoundAnswers(gameQuestionIndexes, correctAnswerIndex, correctAnswerTargetLocation) {
-    // Get the answers for a given question, and place the correct answer at the spot marked by the
-    // correctAnswerTargetLocation variable. Note that you can have as many answers as you want but
-    // only ANSWER_COUNT will be selected.
-    var answers = [],
-        answersCopy = questions[gameQuestionIndexes[correctAnswerIndex]][Object.keys(questions[gameQuestionIndexes[correctAnswerIndex]])[0]],
-        temp, i;
-
-    var index = answersCopy.length;
-
-    if (index < ANSWER_COUNT){
-        throw "Not enough answers for question.";
-    }
-
-    // Shuffle the answers, excluding the first element.
-    for (var j = 1; j < answersCopy.length; j++){
-        var rand = Math.floor(Math.random() * (index - 1)) + 1;
-        index -= 1;
-
-        var temp = answersCopy[index];
-        answersCopy[index] = answersCopy[rand];
-        answersCopy[rand] = temp;
-    }
-
-    // Swap the correct answer into the target location
-    for (i = 0; i < ANSWER_COUNT; i++) {
-        answers[i] = answersCopy[i];
-    }
-    temp = answers[0];
-    answers[0] = answers[correctAnswerTargetLocation];
-    answers[correctAnswerTargetLocation] = temp;
-    return answers;
+    return questions;
 }
 
 function handleAnswerRequest(intent, session, callback) {
-    var speechOutput = "";
-    var sessionAttributes = {};
-    var gameInProgress = session.attributes && session.attributes.questions;
-    var answerSlotValid = isAnswerSlotValid(intent);
-    var userGaveUp = intent.name === "DontKnowIntent";
+       callback({},
+            buildSpeechletResponse(CARD_TITLE, "correct", "correct", false)); 
+ 
 
-    if (!gameInProgress) {
-        // If the user responded with an answer but there is no game in progress, ask the user
-        // if they want to start a new game. Set a flag to track that we've prompted the user.
-        sessionAttributes.userPromptedToContinue = true;
-        speechOutput = "There is no game in progress. Do you want to start a new game? ";
-        callback(sessionAttributes,
-            buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, false));
-    } else if (!answerSlotValid && !userGaveUp) {
-        // If the user provided answer isn't a number > 0 and < ANSWER_COUNT,
-        // return an error message to the user. Remember to guide the user into providing correct values.
-        var reprompt = session.attributes.speechOutput;
-        var speechOutput = "Your answer must be a number between 1 and " + ANSWER_COUNT + ". " + reprompt;
-        callback(session.attributes,
-            buildSpeechletResponse(CARD_TITLE, speechOutput, reprompt, false));
-    } else {
-        var gameQuestions = session.attributes.questions,
-            correctAnswerIndex = parseInt(session.attributes.correctAnswerIndex),
-            currentScore = parseInt(session.attributes.score),
-            currentQuestionIndex = parseInt(session.attributes.currentQuestionIndex),
-            correctAnswerText = session.attributes.correctAnswerText;
+    // var speechOutput = "";
+    // var sessionAttributes = {};
 
-        var speechOutputAnalysis = "";
+    // var gameInProgress = session.attributes && session.attributes.questions;
+    // var userGaveUp = intent.name === "DontKnowIntent";
 
-        if (answerSlotValid && parseInt(intent.slots.Answer.value) == correctAnswerIndex) {
-            currentScore++;
-            speechOutputAnalysis = "correct. ";
-        } else {
-            if (!userGaveUp) {
-                speechOutputAnalysis = "wrong. "
-            }
-            speechOutputAnalysis += "The correct answer is " + correctAnswerIndex + ": " + correctAnswerText + ". ";
-        }
-        // if currentQuestionIndex is 4, we've reached 5 questions (zero-indexed) and can exit the game session
-        if (currentQuestionIndex == GAME_LENGTH - 1) {
-            speechOutput = userGaveUp ? "" : "That answer is ";
-            speechOutput += speechOutputAnalysis + "You got " + currentScore.toString() + " out of "
-                + GAME_LENGTH.toString() + " questions correct. Thank you for playing!";
-            callback(session.attributes,
-                buildSpeechletResponse(CARD_TITLE, speechOutput, "", true));
-        } else {
-            currentQuestionIndex += 1;
-            var spokenQuestion = Object.keys(questions[gameQuestions[currentQuestionIndex]])[0];
-            // Generate a random index for the correct answer, from 0 to 3
-            correctAnswerIndex = Math.floor(Math.random() * (ANSWER_COUNT));
-            var roundAnswers = populateRoundAnswers(gameQuestions, currentQuestionIndex, correctAnswerIndex),
+    // if (!gameInProgress) {
+    //     // If the user responded with an answer but there is no game in progress, ask the user
+    //     // if they want to start a new game. Set a flag to track that we've prompted the user.
+    //     sessionAttributes.userPromptedToContinue = true;
+    //     speechOutput = "There is no game in progress. Do you want to start a new game? ";
+    //     callback(sessionAttributes,
+    //         buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, false));
+    // } else {
+    //     var gameQuestions = session.attributes.questions,
+    //         currentScore = parseInt(session.attributes.score),
+    //         currentQuestionText = session.attributes.currentQuestion.question,
+    //         correctAnswerText = session.attributes.currentQuestion.answer,
+    //         askedQuestions = session.attributes.askedQuestions;
 
-                questionIndexForSpeech = currentQuestionIndex + 1,
-                repromptText = "Question " + questionIndexForSpeech.toString() + ". " + spokenQuestion + " ";
-            for (var i = 0; i < ANSWER_COUNT; i++) {
-                repromptText += (i+1).toString() + ". " + roundAnswers[i] + ". "
-            }
-            speechOutput += userGaveUp ? "" : "That answer is ";
-            speechOutput += speechOutputAnalysis + "Your score is " + currentScore.toString() + ". " + repromptText;
+    //     var speechOutputAnalysis = "";
+    
+    //     if (intent.slots.Answer.value == correctAnswerText) {
+    //         currentScore++;
+    //         speechOutputAnalysis = "correct. ";
+    //     } else {
+    //         if (!userGaveUp) {
+    //             speechOutputAnalysis = "wrong. ";
+    //         }
+    //         speechOutputAnalysis += "The correct answer is " + correctAnswerText + ". ";
+    //     }
+    //     callback(sessionAttributes,
+    //         buildSpeechletResponse(CARD_TITLE, speechOutputAnalysis, speechOutputAnalysis, false)); 
+    // }
+    
+    // if (askedQuestions == GAME_LENGTH - 1) {
+    //     speechOutput = userGaveUp ? "" : "That answer is ";
+    //     speechOutput += speechOutputAnalysis + "You got " + currentScore.toString() + " out of "
+    //         + GAME_LENGTH.toString() + " questions correct. Thank you for playing!";
+    //     callback(session.attributes,
+    //         buildSpeechletResponse(CARD_TITLE, speechOutput, "", true));
+    // } else {
+    //     askedQuestions += 1;
+    //     var question = gameQuestions[askedQuestions];
+    //     var roundAnswer = question.answer,
+    //         questionIndexForSpeech = askedQuestions + 1,
+    //         repromptText = "Question " + questionIndexForSpeech.toString() + ". " + question.question + " ";
+        
+    //     speechOutput += userGaveUp ? "" : "That answer is ";
+    //     speechOutput += speechOutputAnalysis + "Your score is " + currentScore.toString() + ". " + repromptText;
 
-            sessionAttributes = {
-                "speechOutput": repromptText,
-                "repromptText": repromptText,
-                "currentQuestionIndex": currentQuestionIndex,
-                "correctAnswerIndex": correctAnswerIndex + 1,
-                "questions": gameQuestions,
-                "score": currentScore,
-                "correctAnswerText":
-                    questions[gameQuestions[currentQuestionIndex]][Object.keys(questions[gameQuestions[currentQuestionIndex]])[0]][0]
-            };
-            callback(sessionAttributes,
-                buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
-        }
-    }
+    //     sessionAttributes = {
+    //         "speechOutput": speechOutput,
+    //         "repromptText": repromptText,
+    //         "currentQuestion": question,
+    //         "questions": gameQuestions,
+    //         "score": currentScore,
+    //         "askedQuestions": askedQuestions
+    //     };
+    //     callback(sessionAttributes,
+    //         buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
+    // }
 }
 
 function handleRepeatRequest(intent, session, callback) {
@@ -391,12 +304,6 @@ function handleFinishSessionRequest(intent, session, callback) {
     // End the session with a "Good bye!" if the user wants to quit the game
     callback(session.attributes,
         buildSpeechletResponseWithoutCard("Good bye!", "", true));
-}
-
-function isAnswerSlotValid(intent) {
-    var answerSlotFilled = intent.slots && intent.slots.Answer && intent.slots.Answer.value;
-    var answerSlotIsInt = answerSlotFilled && !isNaN(parseInt(intent.slots.Answer.value));
-    return answerSlotIsInt && parseInt(intent.slots.Answer.value) < (ANSWER_COUNT + 1) && parseInt(intent.slots.Answer.value) > 0;
 }
 
 // ------- Helper functions to build responses -------
