@@ -11,7 +11,8 @@
  */
 
 'use strict';
-
+var https = require('https');
+// var rp = require('request-promise');
 /**
  * When editing your questions pay attention to your punctuation. Make sure you use question marks or periods.
  * Make sure the first answer is the correct one. Set at least 4 answers, any extras will be shuffled in.
@@ -160,25 +161,55 @@ var CARD_TITLE = "Studylexa"; // Be sure to change this for your skill.
 function getWelcomeResponse(callback) {
     try {
         var sessionAttributes = {},
-            speechOutput = "Welcome to StudyLex. I will ask you " + GAME_LENGTH.toString()
-                + " questions, try to get as many right as you can. Let's begin. ",
+            // speechOutput = "Welcome to StudyLex. I will ask you " + GAME_LENGTH.toString()
+            //     + " questions, try to get as many right as you can. Let's begin. ",
             shouldEndSession = false,
             gameQuestions = populateGameQuestions(),
             currentQuestion = gameQuestions[0],
             spokenQuestion = currentQuestion.question;
             
-        speechOutput += "Question 1. " + spokenQuestion;
+        // speechOutput += "Question 1. " + spokenQuestion;
 
-        sessionAttributes = {
-            "speechOutput": speechOutput,
-            "repromptText": speechOutput,
-            "currentQuestion": currentQuestion,
-            "askedQuestions": 0,
-            "questions": gameQuestions,
-            "score": 0,
-        };
-        callback(sessionAttributes,
-            buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, shouldEndSession));
+        // var options = {
+        //     host: "http://studylex.azurewebsites.net",
+        //     port: 80,
+        //     path: "/test"
+        // };
+
+        // var options = {
+        //     method: 'GET',
+        //     uri: "http://studylex.azurewebsites.net",
+        //     resolveWithFullResponse: true,
+        //     json: true
+        // };
+
+        https.get("https://studylex.azurewebsites.net/test", function(res) {
+            var body = '';
+
+            res.on('data', function (chunk) {
+                body += chunk;
+            });
+
+            res.on('end', function () {
+                var stringResult = JSON.parse(body);
+                console.log(stringResult);
+
+                var speechOutput = "the response was " + stringResult.test;
+
+                sessionAttributes = {
+                    "speechOutput": speechOutput,
+                    "repromptText": speechOutput,
+                    "currentQuestion": currentQuestion,
+                    "askedQuestions": 0,
+                    "questions": gameQuestions,
+                    "score": 0,
+                };
+                callback(sessionAttributes,
+                    buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, shouldEndSession));
+            });
+        }).on('error', function (e) {
+            console.log("Got error: ", e);
+        });
     }
     catch(ex) {
         console.log(ex);
