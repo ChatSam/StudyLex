@@ -20,7 +20,7 @@ var questions = [
     {
         question: "What color do red and blue combine to make",
         answer: "purple",
-        hint: "this is a hint",
+        hint: ["this is a hint"],
         more: "roses are red, violets are blue"
     }
 ];
