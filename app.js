@@ -20,7 +20,7 @@ var questions = [
     {
         question: "What color do red and blue combine to make",
         answer: "purple",
-        hint: ["this is a hint"],
+        hint: ["this is a hint","hint tototooooooo"],
         more: "roses are red, violets are blue"
     }
 ];
@@ -207,8 +207,14 @@ function populateGameQuestions() {
 function handleHintRequest(intent, session, callback) {
     var speechOutput = "";
     var sessionAttributes = {};
+    var hintCount = session.attributes.hintCount || 0;
+    
+    if (hintCount >= session.attributes.currentQuestion.hint.length){
+        speechOutput = "There are no more hints";
+    } else{
+        speechOutput = session.attributes.currentQuestion.hint[hintCount];
+    }
 
-    speechOutput = session.attributes.currentQuestion.hint;
 
     sessionAttributes = {
         "speechOutput": speechOutput,
@@ -216,7 +222,8 @@ function handleHintRequest(intent, session, callback) {
         "currentQuestion": session.attributes.currentQuestion,
         "questions": session.attributes.questions,
         "score": session.attributes.currentScore,
-        "askedQuestions": session.attributes.askedQuestions
+        "askedQuestions": session.attributes.askedQuestions,
+        "hintCount":hintCount+1
     };
 
     callback(sessionAttributes,
@@ -243,8 +250,9 @@ function handleMoreDetailsRequest(intent, session, callback){
 }
 
 function handleAnswerRequest(intent, session, callback) {
-    var speechOutput = "";
-    var sessionAttributes = {};
+    var speechOutput = "",
+        sessionAttributes = {};
+
 
     var gameInProgress = session.attributes && session.attributes.questions;
     var userGaveUp = intent.name === "DontKnowIntent";
@@ -265,7 +273,7 @@ function handleAnswerRequest(intent, session, callback) {
 
         var speechOutputAnalysis = "";
     
-        if (intent.slots.Answer.value == correctAnswerText) {
+        if (intent && intent.slots && intent.slots.Answer && intent.slots.Answer.value == correctAnswerText) {
             currentScore++;
             speechOutputAnalysis = "correct. ";
         } else {
