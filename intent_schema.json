@@ -1,6 +1,14 @@
 {
     "intents": [
         {
+            "intent":"PickSubjectIntent","slots": [
+                {
+                    "name": "Subject",
+                    "type": "AMAZON.LITERAL"
+                }
+            ]
+        },
+        {
             "intent": "AnswerOnlyIntent",
             "slots": [
                 {

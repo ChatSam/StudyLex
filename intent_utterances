@@ -26,6 +26,10 @@ DontKnowIntent i don't know this question
 DontKnowIntent i don't know that one
 DontKnowIntent dunno
 
+PickSubjectIntent select {birds|Subject} as subject
+ 
+
+
 AnswerOnlyIntent {purple|Answer}
 AnswerOnlyIntent {red|Answer} 
 AnswerOnlyIntent {green|Answer}

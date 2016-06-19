@@ -5,10 +5,6 @@
  or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-/**
- * This sample shows how to create a simple Trivia skill with a multiple choice format. The skill
- * supports 1 player at a time, and does not support games across sessions.
- */
 
 'use strict';
 
@@ -19,15 +15,17 @@
 var questions = [
     {
         question: "Which bird makes this sound? <audio src='https://s3.amazonaws.com/angelhackcinci/output.mp3'/>",
-        answer: "hawk",
+        answer: "eagle",
         hint: ["Starts with an h.","A sharpshooter"],
         more: "These birds are excellent birds of pray who eat everythings. They have sharp claws and sharper eyes.",
+        subject:"birds"
     },
     {
         question: "What color do red and blue combine to make?",
         answer: "purple",
-        hint: ["this is a hint","hint tototooooooo"],
-        more: "roses are red, violets are blue"
+        hint: ["this is a hint","it rhymes with nurple"],
+        more: "roses are red, violets are blue",
+        subject: "art"
     }
 ];
 
@@ -112,7 +110,9 @@ function onIntent(intentRequest, session, callback) {
     }
 
     // dispatch custom intents to handlers here
-    if ("AnswerIntent" === intentName) {
+    if("PickSubjectIntent" === intentName){
+        handlePickSubjectRequest(intent,session, callback);
+    }else if ("AnswerIntent" === intentName) {
         handleAnswerRequest(intent, session, callback);
     } else if ("AnswerOnlyIntent" === intentName) {
         handleAnswerRequest(intent, session, callback);
@@ -160,14 +160,13 @@ var CARD_TITLE = "Studylexa"; // Be sure to change this for your skill.
 function getWelcomeResponse(callback) {
     try {
         var sessionAttributes = {},
-            speechOutput = "Welcome to StudyLex. I will ask you " + GAME_LENGTH.toString()
-                + " questions, try to get as many right as you can. Let's begin. ",
+            speechOutput = "Welcome to StudyLex... Pick a subject to start off.",
             shouldEndSession = false,
-            gameQuestions = populateGameQuestions(),
+            gameQuestions = populateGameQuestions(questions),
             currentQuestion = gameQuestions[0],
             spokenQuestion = currentQuestion.question;
-            
-        speechOutput += "Question 1. " + spokenQuestion;
+
+        //speechOutput += "Question 1. " + spokenQuestion;
 
         sessionAttributes = {
             "speechOutput": speechOutput,
@@ -186,7 +185,7 @@ function getWelcomeResponse(callback) {
     }
 }
 
-function populateGameQuestions() {
+function populateGameQuestions(ques) {
     // var gameQuestions = [];
     // var indexList = [];
     // var index = questions.length;
@@ -212,14 +211,74 @@ function populateGameQuestions() {
 
     // return gameQuestions;
 
-    return questions;
+    return ques;
 }
+
+function handlePickSubjectRequest(intent, session, callback){
+
+    var subject = "";
+
+    var speechOutput = "";
+    var gameLen = 0;
+
+    if(intent && intent.slots && intent.slots.Subject && intent.slots.Subject.value){
+        subject = intent.slots.Subject.value;
+
+        speechOutput = subject.toString()+" selected as the Subject... Let's begin"
+
+        var questionList = [];
+
+        for(var i = 0; i < questions.length; i++) {
+            var q = questions[i];
+            if(q.subject == subject) {
+                questionList.push(q);
+
+                console.log("CheckRRR : " +q.toString())
+            }
+
+            gameLen = gameLen + 1;
+        }
+        GAME_LENGTH = gameLen;
+
+    }else{
+        speechOutput = "No subject selected. Mixing up questions"
+    }
+    try {
+        var sessionAttributes = {},
+            shouldEndSession = false,
+            gameQuestions = populateGameQuestions(questionList),
+            currentQuestion = gameQuestions[0],
+            spokenQuestion = currentQuestion.question;
+
+        speechOutput = speechOutput+"...."+"I will ask you " + GAME_LENGTH.toString()
+            + " questions, try to get as many right as you can. Let's begin. "
+        speechOutput += "Question 1. " + spokenQuestion;
+
+        sessionAttributes = {
+            "speechOutput": speechOutput,
+            "repromptText": speechOutput,
+            "currentQuestion": currentQuestion,
+            "askedQuestions": 0,
+            "questions": gameQuestions,
+            "score": 0,
+        };
+        callback(sessionAttributes,
+            buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, shouldEndSession));
+    }
+    catch(ex) {
+        console.log(ex);
+        throw ex;
+    }
+
+
+}
+
 
 function handleHintRequest(intent, session, callback) {
     var speechOutput = "";
     var sessionAttributes = {};
     var hintCount = session.attributes.hintCount || 0;
-    
+
     if (hintCount >= session.attributes.currentQuestion.hint.length){
         speechOutput = "There are no more hints";
     } else{
@@ -255,12 +314,12 @@ function handleMoreDetailsRequest(intent, session, callback){
         "askedQuestions": session.attributes.askedQuestions
     };
 
-     callback(sessionAttributes,
+    callback(sessionAttributes,
         buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, false));
 }
 
 function handleAnswerRequest(intent, session, callback) {
-    try 
+    try
     {
         var speechOutput = "",
             sessionAttributes = {};
@@ -277,13 +336,13 @@ function handleAnswerRequest(intent, session, callback) {
                 buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, false));
         } else {
             var gameQuestions = session.attributes.questions,
-                currentScore = parseInt(session.attributes.score),
+                currentScore = parseInt(session.attributes.score) || 0,
                 currentQuestionText = session.attributes.currentQuestion.question,
                 correctAnswerText = session.attributes.currentQuestion.answer,
                 askedQuestions = session.attributes.askedQuestions;
 
             var speechOutputAnalysis = "";
-        
+
             if (intent && intent.slots && intent.slots.Answer && intent.slots.Answer.value == correctAnswerText) {
                 currentScore++;
                 speechOutputAnalysis = "correct. ";
@@ -291,7 +350,7 @@ function handleAnswerRequest(intent, session, callback) {
                 if (!userGaveUp) {
                     speechOutputAnalysis = "wrong. ";
                 }
-                // speechOutputAnalysis += "You answered " + intent + 
+                // speechOutputAnalysis += "You answered " + intent +
                 //     " while the correct answer is " + correctAnswerText + ". ";
 
 
@@ -300,14 +359,13 @@ function handleAnswerRequest(intent, session, callback) {
                 console.log(intent);
                 console.log(correctAnswerText);
             }
-        
+
             if (askedQuestions == GAME_LENGTH - 1) {
 
                 var scoreCommentValue = Math.round(currentScore/GAME_LENGTH);
-                console.log("VAlueeeee"+scoreCommentValue.toString());
                 var scoreChecker = 0.5
                 var scoreComment = ""
-                
+
                 if (scoreCommentValue >= scoreChecker){
                     scoreComment = "Well done !";
                 }else{
@@ -326,7 +384,7 @@ function handleAnswerRequest(intent, session, callback) {
                 var roundAnswer = question.answer,
                     questionIndexForSpeech = askedQuestions + 1,
                     repromptText = "Question " + questionIndexForSpeech.toString() + ". " + question.question + " ";
-                
+
                 speechOutput += userGaveUp ? "" : "That answer is ";
                 speechOutput += speechOutputAnalysis + "Your score is " + currentScore.toString() + ". " + repromptText;
 
@@ -370,12 +428,12 @@ function handleGetHelpRequest(intent, session, callback) {
     // Do not edit the help dialogue. This has been created by the Alexa team to demonstrate best practices.
 
     var speechOutput = "I will ask you " + GAME_LENGTH + " multiple choice questions. Respond with the number of the answer. "
-        + "For example, say one, two, three, or four. To start a new game at any time, say, start game. "
-        + "To repeat the last question, say, repeat. "
-        + "Would you like to keep playing?",
+            + "For example, say one, two, three, or four. To start a new game at any time, say, start game. "
+            + "To repeat the last question, say, repeat. "
+            + "Would you like to keep playing?",
         repromptText = "To give an answer to a question, respond with the number of the answer . "
-        + "Would you like to keep playing?";
-        var shouldEndSession = false;
+            + "Would you like to keep playing?";
+    var shouldEndSession = false;
     callback(session.attributes,
         buildSpeechletResponseWithoutCard(speechOutput, repromptText, shouldEndSession));
 }
