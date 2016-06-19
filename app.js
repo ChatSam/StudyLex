@@ -18,13 +18,13 @@
  */
 var questions = [
     {
-        question: "Which bird makes this sound <audio src='https://s3.amazonaws.com/angelhackcinci/output.mp3'/>",
+        question: "Which bird makes this sound? <audio src='https://s3.amazonaws.com/angelhackcinci/output.mp3'/>",
         answer: "hawk",
         hint: ["Starts with an h.","A sharpshooter"],
         more: "These birds are excellent birds of pray who eat everythings. They have sharp claws and sharper eyes."
     },
     {
-        question: "What color do red and blue combine to make",
+        question: "What color do red and blue combine to make?",
         answer: "purple",
         hint: ["this is a hint","hint tototooooooo"],
         more: "roses are red, violets are blue"
@@ -167,7 +167,7 @@ function getWelcomeResponse(callback) {
             currentQuestion = gameQuestions[0],
             spokenQuestion = currentQuestion.question;
             
-        speechOutput += "Question 1. " + spokenQuestion + ". ";
+        speechOutput += "Question 1. " + spokenQuestion;
 
         sessionAttributes = {
             "speechOutput": speechOutput,
@@ -293,7 +293,7 @@ function handleAnswerRequest(intent, session, callback) {
                 }
                 // speechOutputAnalysis += "You answered " + intent + 
                 //     " while the correct answer is " + correctAnswerText + ". ";
-                speechOutputAnalysis = "The correct answer is " + correctAnswerText;
+                speechOutputAnalysis = "wrong. The correct answer is " + correctAnswerText + ". ";
                 console.log(intent);
                 console.log(correctAnswerText);
             }
@@ -374,6 +374,8 @@ function handleFinishSessionRequest(intent, session, callback) {
 
 
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
+    console.log(output);
+
     return {
         outputSpeech: {
             type: "SSML",
