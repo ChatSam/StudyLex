@@ -170,31 +170,36 @@ function getWelcomeResponse(callback) {
             
         // speechOutput += "Question 1. " + spokenQuestion;
 
-        // var options = {
-        //     host: "http://studylex.azurewebsites.net",
-        //     port: 80,
-        //     path: "/test"
-        // };
-
-        // var options = {
-        //     method: 'GET',
-        //     uri: "http://studylex.azurewebsites.net",
-        //     resolveWithFullResponse: true,
-        //     json: true
-        // };
-
-        https.get("https://studylex.azurewebsites.net/test", function(res) {
+        https.get("https://studylex.azurewebsites.net/blog/posts", function(res) {
             var body = '';
 
             res.on('data', function (chunk) {
                 body += chunk;
+                
+                            // console.log(body);
+            body = JSON.parse(body);
+            // console.log(body);
+            // console.log(gameQuestions);
+            
+            var l = body.length, hint;
+            while(l--) {
+                hint = [];
+                hint.push(body[l].hint1);
+                hint.push(body[l].hint2);
+                hint.push(body[l].hint3);
+                body[l].hint = hint;
+                gameQuestions.push(body[l]);
+            }
+            console.log(gameQuestions);
             });
 
-            res.on('end', function () {
-                var stringResult = JSON.parse(body);
-                console.log(stringResult);
 
-                var speechOutput = "the response was " + stringResult.test;
+            res.on('end', function () {
+                // var stringResult = JSON.parse(body);
+                console.log(body);
+
+                // var speechOutput = "the response was ";
+                var speechOutput = "the response was " + gameQuestions[gameQuestions.length - 1].subject;
 
                 sessionAttributes = {
                     "speechOutput": speechOutput,
