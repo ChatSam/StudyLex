@@ -21,7 +21,7 @@ var questions = [
         question: "Which bird makes this sound? <audio src='https://s3.amazonaws.com/angelhackcinci/output.mp3'/>",
         answer: "hawk",
         hint: ["Starts with an h.","A sharpshooter"],
-        more: "These birds are excellent birds of pray who eat everythings. They have sharp claws and sharper eyes."
+        more: "These birds are excellent birds of pray who eat everythings. They have sharp claws and sharper eyes.",
     },
     {
         question: "What color do red and blue combine to make?",
@@ -160,8 +160,8 @@ var CARD_TITLE = "Studylexa"; // Be sure to change this for your skill.
 function getWelcomeResponse(callback) {
     try {
         var sessionAttributes = {},
-            speechOutput = "I will ask you " + GAME_LENGTH.toString()
-                + " questions, try to get as many right as you can. Just say the number of the answer. Let's begin. ",
+            speechOutput = "Welcome to StudyLex. I will ask you " + GAME_LENGTH.toString()
+                + " questions, try to get as many right as you can. Let's begin. ",
             shouldEndSession = false,
             gameQuestions = populateGameQuestions(),
             currentQuestion = gameQuestions[0],
@@ -293,15 +293,31 @@ function handleAnswerRequest(intent, session, callback) {
                 }
                 // speechOutputAnalysis += "You answered " + intent + 
                 //     " while the correct answer is " + correctAnswerText + ". ";
+
+
+
                 speechOutputAnalysis = "wrong. The correct answer is " + correctAnswerText + ". ";
                 console.log(intent);
                 console.log(correctAnswerText);
             }
         
             if (askedQuestions == GAME_LENGTH - 1) {
+
+                var scoreCommentValue = Math.round(currentScore/GAME_LENGTH);
+                console.log("VAlueeeee"+scoreCommentValue.toString());
+                var scoreChecker = 0.5
+                var scoreComment = ""
+                
+                if (scoreCommentValue >= scoreChecker){
+                    scoreComment = "Well done !";
+                }else{
+                    scoreComment = "Hm. better luck next time."
+                }
+
+
                 speechOutput = userGaveUp ? "" : "That answer is ";
                 speechOutput += speechOutputAnalysis + "You got " + currentScore.toString() + " out of "
-                    + GAME_LENGTH.toString() + " questions correct. Thank you for playing!";
+                    + GAME_LENGTH.toString() + " questions correct...." + scoreComment;
                 callback(session.attributes,
                     buildSpeechletResponse(CARD_TITLE, speechOutput, "", true));
             } else {
