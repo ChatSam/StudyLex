@@ -1,29 +1,24 @@
-AnswerOnlyIntent {George Washington|Answer}
-AnswerOnlyIntent {George|Answer} 
-AnswerOnlyIntent {Washington|Answer}
+HintIntent give me a hint
+HintIntent hint
+HintIntent i'd like a hint
+HintIntent i'm stuck
+HintIntent can i have a hint
+HintIntent hint please
 
 AMAZON.StartOverIntent start game
-
 AMAZON.StartOverIntent new game
-
 AMAZON.StartOverIntent start
-
 AMAZON.StartOverIntent start new game
 
- 
-
 DontKnowIntent i don't know
-
 DontKnowIntent don't know
-
 DontKnowIntent skip
-
 DontKnowIntent i don't know that
-
 DontKnowIntent who knows
-
 DontKnowIntent i don't know this question
-
 DontKnowIntent i don't know that one
-
 DontKnowIntent dunno
+
+AnswerOnlyIntent {purple|Answer}
+AnswerOnlyIntent {red|Answer} 
+AnswerOnlyIntent {green|Answer}
