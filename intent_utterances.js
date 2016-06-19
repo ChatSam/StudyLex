@@ -1,14 +1,6 @@
-AnswerIntent the answer is {Answer}
-
-AnswerIntent my answer is {Answer}
-
-AnswerIntent is it {Answer}
-
-AnswerIntent {Answer} is my answer
-
-AnswerOnlyIntent {Answer}
-
- 
+AnswerOnlyIntent {George Washington|Answer}
+AnswerOnlyIntent {George|Answer} 
+AnswerOnlyIntent {Washington|Answer}
 
 AMAZON.StartOverIntent start game
 
