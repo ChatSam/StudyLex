@@ -4,7 +4,7 @@
             "intent":"PickSubjectIntent","slots": [
                 {
                     "name": "Subject",
-                    "type": "AMAZON.LITERAL"
+                    "type": "Subject_List"
                 }
             ]
         },
@@ -13,7 +13,7 @@
             "slots": [
                 {
                     "name": "Answer",
-                    "type": "AMAZON.LITERAL"
+                    "type": "Answer_List"
                 }
             ]
         },

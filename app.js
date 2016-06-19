@@ -7,8 +7,7 @@
 
 
 'use strict';
-var https = require('https');
-// var rp = require('request-promise');
+
 /**
  * When editing your questions pay attention to your punctuation. Make sure you use question marks or periods.
  * Make sure the first answer is the correct one. Set at least 4 answers, any extras will be shuffled in.
@@ -162,62 +161,23 @@ function getWelcomeResponse(callback) {
     try {
         var sessionAttributes = {},
             speechOutput = "Welcome to StudyLex... Pick a subject to start off.",
-
-            // speechOutput = "Welcome to StudyLex. I will ask you " + GAME_LENGTH.toString()
-            //     + " questions, try to get as many right as you can. Let's begin. ",
-
             shouldEndSession = false,
             gameQuestions = populateGameQuestions(questions),
             currentQuestion = gameQuestions[0],
             spokenQuestion = currentQuestion.question;
 
-        // speechOutput += "Question 1. " + spokenQuestion;
+        //speechOutput += "Question 1. " + spokenQuestion;
 
-        https.get("https://studylex.azurewebsites.net/blog/posts", function(res) {
-            var body = '';
-
-            res.on('data', function (chunk) {
-                body += chunk;
-                
-                            // console.log(body);
-            body = JSON.parse(body);
-            // console.log(body);
-            // console.log(gameQuestions);
-            
-            var l = body.length, hint;
-            while(l--) {
-                hint = [];
-                hint.push(body[l].hint1);
-                hint.push(body[l].hint2);
-                hint.push(body[l].hint3);
-                body[l].hint = hint;
-                gameQuestions.push(body[l]);
-            }
-            console.log(gameQuestions);
-            });
-
-
-            res.on('end', function () {
-                // var stringResult = JSON.parse(body);
-                console.log(body);
-
-                // var speechOutput = "the response was ";
-                var speechOutput = "the response was " + gameQuestions[gameQuestions.length - 1].subject;
-
-                sessionAttributes = {
-                    "speechOutput": speechOutput,
-                    "repromptText": speechOutput,
-                    "currentQuestion": currentQuestion,
-                    "askedQuestions": 0,
-                    "questions": gameQuestions,
-                    "score": 0,
-                };
-                callback(sessionAttributes,
-                    buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, shouldEndSession));
-            });
-        }).on('error', function (e) {
-            console.log("Got error: ", e);
-        });
+        sessionAttributes = {
+            "speechOutput": speechOutput,
+            "repromptText": speechOutput,
+            "currentQuestion": currentQuestion,
+            "askedQuestions": 0,
+            "questions": gameQuestions,
+            "score": 0,
+        };
+        callback(sessionAttributes,
+            buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, shouldEndSession));
     }
     catch(ex) {
         console.log(ex);
