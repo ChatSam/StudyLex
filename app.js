@@ -18,6 +18,12 @@
  */
 var questions = [
     {
+        question: "Which bird makes this sound <audio src='https://s3.amazonaws.com/angelhackcinci/output.mp3'/>",
+        answer: "hawk",
+        hint: ["Starts with an h.","A sharpshooter"],
+        more: "These birds are excellent birds of pray who eat everythings. They have sharp claws and sharper eyes."
+    },
+    {
         question: "What color do red and blue combine to make",
         answer: "purple",
         hint: ["this is a hint","hint tototooooooo"],
@@ -148,31 +154,36 @@ function onSessionEnded(sessionEndedRequest, session) {
 
 // ------- Skill specific business logic -------
 
-var GAME_LENGTH = 1;
+var GAME_LENGTH = 2;
 var CARD_TITLE = "Studylexa"; // Be sure to change this for your skill.
 
 function getWelcomeResponse(callback) {
-    var sessionAttributes = {},
-        speechOutput = "I will ask you " + GAME_LENGTH.toString()
-            + " questions, try to get as many right as you can. Just say the number of the answer. Let's begin. ",
-        shouldEndSession = false,
+    try {
+        var sessionAttributes = {},
+            speechOutput = "I will ask you " + GAME_LENGTH.toString()
+                + " questions, try to get as many right as you can. Just say the number of the answer. Let's begin. ",
+            shouldEndSession = false,
+            gameQuestions = populateGameQuestions(),
+            currentQuestion = gameQuestions[0],
+            spokenQuestion = currentQuestion.question;
+            
+        speechOutput += "Question 1. " + spokenQuestion + ". ";
 
-        gameQuestions = populateGameQuestions(),
-        currentQuestion = gameQuestions[0],
-        spokenQuestion = currentQuestion.question;
-        
-    speechOutput = "Question 1. " + spokenQuestion + ". ";
-
-    sessionAttributes = {
-        "speechOutput": speechOutput,
-        "repromptText": speechOutput,
-        "currentQuestion": currentQuestion,
-        "askedQuestions": 0,
-        "questions": gameQuestions,
-        "score": 0,
-    };
-    callback(sessionAttributes,
-        buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, shouldEndSession));
+        sessionAttributes = {
+            "speechOutput": speechOutput,
+            "repromptText": speechOutput,
+            "currentQuestion": currentQuestion,
+            "askedQuestions": 0,
+            "questions": gameQuestions,
+            "score": 0,
+        };
+        callback(sessionAttributes,
+            buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, shouldEndSession));
+    }
+    catch(ex) {
+        console.log(ex);
+        throw ex;
+    }
 }
 
 function populateGameQuestions() {
@@ -215,7 +226,6 @@ function handleHintRequest(intent, session, callback) {
         speechOutput = session.attributes.currentQuestion.hint[hintCount];
     }
 
-
     sessionAttributes = {
         "speechOutput": speechOutput,
         "repromptText": speechOutput,
@@ -250,66 +260,76 @@ function handleMoreDetailsRequest(intent, session, callback){
 }
 
 function handleAnswerRequest(intent, session, callback) {
-    var speechOutput = "",
-        sessionAttributes = {};
+    try 
+    {
+        var speechOutput = "",
+            sessionAttributes = {};
 
+        var gameInProgress = session.attributes && session.attributes.questions;
+        var userGaveUp = intent.name === "DontKnowIntent";
 
-    var gameInProgress = session.attributes && session.attributes.questions;
-    var userGaveUp = intent.name === "DontKnowIntent";
-
-    if (!gameInProgress) {
-        // If the user responded with an answer but there is no game in progress, ask the user
-        // if they want to start a new game. Set a flag to track that we've prompted the user.
-        sessionAttributes.userPromptedToContinue = true;
-        speechOutput = "There is no game in progress. Do you want to start a new game? ";
-        callback(sessionAttributes,
-            buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, false));
-    } else {
-        var gameQuestions = session.attributes.questions,
-            currentScore = parseInt(session.attributes.score),
-            currentQuestionText = session.attributes.currentQuestion.question,
-            correctAnswerText = session.attributes.currentQuestion.answer,
-            askedQuestions = session.attributes.askedQuestions;
-
-        var speechOutputAnalysis = "";
-    
-        if (intent && intent.slots && intent.slots.Answer && intent.slots.Answer.value == correctAnswerText) {
-            currentScore++;
-            speechOutputAnalysis = "correct. ";
-        } else {
-            if (!userGaveUp) {
-                speechOutputAnalysis = "wrong. ";
-            }
-            speechOutputAnalysis += "The correct answer is " + correctAnswerText + ". ";
-        }
-    
-        if (askedQuestions == GAME_LENGTH - 1) {
-            speechOutput = userGaveUp ? "" : "That answer is ";
-            speechOutput += speechOutputAnalysis + "You got " + currentScore.toString() + " out of "
-                + GAME_LENGTH.toString() + " questions correct. Thank you for playing!";
-            callback(session.attributes,
-                buildSpeechletResponse(CARD_TITLE, speechOutput, "", true));
-        } else {
-            askedQuestions += 1;
-            var question = gameQuestions[askedQuestions];
-            var roundAnswer = question.answer,
-                questionIndexForSpeech = askedQuestions + 1,
-                repromptText = "Question " + questionIndexForSpeech.toString() + ". " + question.question + " ";
-            
-            speechOutput += userGaveUp ? "" : "That answer is ";
-            speechOutput += speechOutputAnalysis + "Your score is " + currentScore.toString() + ". " + repromptText;
-
-            sessionAttributes = {
-                "speechOutput": speechOutput,
-                "repromptText": repromptText,
-                "currentQuestion": question,
-                "questions": gameQuestions,
-                "score": currentScore,
-                "askedQuestions": askedQuestions
-            };
+        if (!gameInProgress) {
+            // If the user responded with an answer but there is no game in progress, ask the user
+            // if they want to start a new game. Set a flag to track that we've prompted the user.
+            sessionAttributes.userPromptedToContinue = true;
+            speechOutput = "There is no game in progress. Do you want to start a new game? ";
             callback(sessionAttributes,
-                buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
+                buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, false));
+        } else {
+            var gameQuestions = session.attributes.questions,
+                currentScore = parseInt(session.attributes.score),
+                currentQuestionText = session.attributes.currentQuestion.question,
+                correctAnswerText = session.attributes.currentQuestion.answer,
+                askedQuestions = session.attributes.askedQuestions;
+
+            var speechOutputAnalysis = "";
+        
+            if (intent && intent.slots && intent.slots.Answer && intent.slots.Answer.value == correctAnswerText) {
+                currentScore++;
+                speechOutputAnalysis = "correct. ";
+            } else {
+                if (!userGaveUp) {
+                    speechOutputAnalysis = "wrong. ";
+                }
+                // speechOutputAnalysis += "You answered " + intent + 
+                //     " while the correct answer is " + correctAnswerText + ". ";
+                speechOutputAnalysis = "The correct answer is " + correctAnswerText;
+                console.log(intent);
+                console.log(correctAnswerText);
+            }
+        
+            if (askedQuestions == GAME_LENGTH - 1) {
+                speechOutput = userGaveUp ? "" : "That answer is ";
+                speechOutput += speechOutputAnalysis + "You got " + currentScore.toString() + " out of "
+                    + GAME_LENGTH.toString() + " questions correct. Thank you for playing!";
+                callback(session.attributes,
+                    buildSpeechletResponse(CARD_TITLE, speechOutput, "", true));
+            } else {
+                askedQuestions += 1;
+                var question = gameQuestions[askedQuestions];
+                var roundAnswer = question.answer,
+                    questionIndexForSpeech = askedQuestions + 1,
+                    repromptText = "Question " + questionIndexForSpeech.toString() + ". " + question.question + " ";
+                
+                speechOutput += userGaveUp ? "" : "That answer is ";
+                speechOutput += speechOutputAnalysis + "Your score is " + currentScore.toString() + ". " + repromptText;
+
+                sessionAttributes = {
+                    "speechOutput": speechOutput,
+                    "repromptText": repromptText,
+                    "currentQuestion": question,
+                    "questions": gameQuestions,
+                    "score": currentScore,
+                    "askedQuestions": askedQuestions
+                };
+                callback(sessionAttributes,
+                    buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
+            }
         }
+    }
+    catch(ex) {
+        console.log(ex);
+        throw ex;
     }
 }
 
@@ -356,8 +376,8 @@ function handleFinishSessionRequest(intent, session, callback) {
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
         outputSpeech: {
-            type: "PlainText",
-            text: output
+            type: "SSML",
+            ssml: "<speak>" + output + "</speak>"
         },
         card: {
             type: "Simple",
@@ -366,8 +386,8 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
         },
         reprompt: {
             outputSpeech: {
-                type: "PlainText",
-                text: repromptText
+                type: "SSML",
+                ssml: "<speak>" + output + "</speak>"
             }
         },
         shouldEndSession: shouldEndSession
@@ -377,13 +397,13 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
 function buildSpeechletResponseWithoutCard(output, repromptText, shouldEndSession) {
     return {
         outputSpeech: {
-            type: "PlainText",
-            text: output
+            type: "SSML",
+            ssml: "<speak>" + output + "</speak>"
         },
         reprompt: {
             outputSpeech: {
-                type: "PlainText",
-                text: repromptText
+                type: "SSML",
+                ssml: "<speak>" + output + "</speak>"
             }
         },
         shouldEndSession: shouldEndSession
