@@ -5,6 +5,14 @@ HintIntent i'm stuck
 HintIntent can i have a hint
 HintIntent hint please
 
+MoreDetailsIntent explain
+MoreDetailsIntent give me more
+MoreDetailsIntent more details
+MoreDetailsIntent why
+MoreDetailsIntent explain please
+MoreDetailsIntent tell me more
+MoreDetailsIntent go on
+
 AMAZON.StartOverIntent start game
 AMAZON.StartOverIntent new game
 AMAZON.StartOverIntent start

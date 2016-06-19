@@ -16,6 +16,9 @@
             "intent": "HintIntent"
         },
         {
+            "intent": "MoreDetailsIntent"
+        },
+        {
             "intent": "AMAZON.StartOverIntent"
         },
         {

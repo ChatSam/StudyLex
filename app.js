@@ -114,6 +114,8 @@ function onIntent(intentRequest, session, callback) {
         handleAnswerRequest(intent, session, callback);
     } else if ("HintIntent" === intentName) {
         handleHintRequest(intent, session, callback);
+    } else if ("MoreDetailsIntent" === intentName){
+        handleMoreDetailsRequest(intent, session, callback);
     } else if ("AMAZON.YesIntent" === intentName) {
         handleAnswerRequest(intent, session, callback);
     } else if ("AMAZON.NoIntent" === intentName) {
@@ -218,6 +220,25 @@ function handleHintRequest(intent, session, callback) {
     };
 
     callback(sessionAttributes,
+        buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, false));
+}
+
+function handleMoreDetailsRequest(intent, session, callback){
+    var speechOutput = "";
+    var sessionAttributes = {};
+
+    speechOutput = session.attributes.currentQuestion.more;
+
+    sessionAttributes = {
+        "speechOutput": speechOutput,
+        "repromptText": speechOutput,
+        "currentQuestion": session.attributes.currentQuestion,
+        "questions": session.attributes.questions,
+        "score": session.attributes.currentScore,
+        "askedQuestions": session.attributes.askedQuestions
+    };
+
+     callback(sessionAttributes,
         buildSpeechletResponse(CARD_TITLE, speechOutput, speechOutput, false));
 }
 
