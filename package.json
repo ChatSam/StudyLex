@@ -4,11 +4,13 @@
   "description": "For the cincinnati hackathon",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "machina": "^2.0.0",
     "request-promise": "^3.0.0"
   },
   "devDependencies": {
