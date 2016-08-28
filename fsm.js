@@ -30,23 +30,24 @@ module.exports = function() {
                 },
                 repeatQuestion: function(reponse) {
                     this.transition("repeatQuestion", response);
-                    this.emit("repeatQuestion", response);
+                },
+                answer: function(response) {
+                    this.transition("answer", response);
                 },
                 quit: function(response) {
                     this.transition("done", response);
-                    this.emit("question", response);
                 }
             },
             repeatQuestion: {
                 _onEnter: function(response) {
-                    this.transition("question", response);
                     this.emit("repeatQuestion", response);
+                    this.transition("question", response);
                 }
             },
             answer: {
                 _onEnter: function(response) {
-                    this.transition("question", response);
                     this.emit("answer", response);
+                    this.transition("question", response);
                 },
                 quit: function(response) {
                     this.transition("done", response);
@@ -61,8 +62,11 @@ module.exports = function() {
 
         // actions
         start: function(response) {
-            console.log("fsm.js.start")
             this.handle("start", response);
+        },
+
+        answer: function(response) {
+            this.handle("answer", response);
         },
 
         repeatQuestion: function(response) {

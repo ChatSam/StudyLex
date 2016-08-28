@@ -12,13 +12,18 @@ var e = {
 var c = buildContext();
 thing.handler(e, c);
 console.log("message:", c.message);
-
-// e = {
-
-//     session: {}
-// };
-// thing.handler(e, c);
-// console.log("message:", e);
+e = {
+    session: {},
+    request: {
+        type: "IntentRequest",
+        intent: {
+            name: "AnswerIntent"
+        },
+        requestId: 13
+    }
+};
+thing.handler(e, c);
+console.log("message:", c.message);
 
 
 function buildContext() {
