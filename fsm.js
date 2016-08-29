@@ -28,7 +28,7 @@ module.exports = function() {
                 _onEnter: function(response) {
                     this.emit("question", response);
                 },
-                repeatQuestion: function(reponse) {
+                repeatQuestion: function(response) {
                     this.transition("repeatQuestion", response);
                 },
                 answer: function(response) {

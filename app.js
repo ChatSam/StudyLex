@@ -24,10 +24,12 @@ exports.handler = function(event, context) {
 
         if(intentName === "AnswerIntent") {
             context.fsm.answer(response);
-        } else if(intentName === "RepeatIntent") {
-            context.fsm.repeat(response);
+        } else if(intentName === "RepeatQuestionIntent") {
+            context.fsm.repeatQuestion(response);
         } else if(intentName === "QuitIntent") {
-            context.fsm.done(response);
+            context.fsm.quit(response);
+        } else {
+            context.fsm.fail("Unknown intent");
         }
 
         var alexaResponse = buildAlexaResponse(response);

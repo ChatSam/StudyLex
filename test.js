@@ -1,4 +1,7 @@
 var thing = require('./app.js');
+var c = buildContext();
+
+
 
 var e = {
     session: {
@@ -9,15 +12,46 @@ var e = {
         requestId: 13
     }
 };
-var c = buildContext();
+
 thing.handler(e, c);
 console.log("message:", c.message);
+
+
+
 e = {
     session: {},
     request: {
         type: "IntentRequest",
         intent: {
             name: "AnswerIntent"
+        },
+        requestId: 13
+    }
+};
+thing.handler(e, c);
+console.log("message:", c.message);
+
+
+e = {
+    session: {},
+    request: {
+        type: "IntentRequest",
+        intent: {
+            name: "RepeatQuestionIntent",
+        },
+        requestId: 13
+    }
+};
+thing.handler(e, c);
+console.log("message:", c.message);
+
+
+e = {
+    session: {},
+    request: {
+        type: "IntentRequest",
+        intent: {
+            name: "QuitIntent",
         },
         requestId: 13
     }
