@@ -3,6 +3,9 @@ exports.handler = function(event, context) {
 
     var _ = require("lodash");
 
+    // probably a better way to handle this
+    event.session.attributes = event.session.attributes || {};
+
     if (event.session.new) {
         console.log("new session");
     }
@@ -20,17 +23,17 @@ exports.handler = function(event, context) {
 
         var intent = event.request.intent,
             intentName = intent.name,
-            session = event.session,
-            responses = event.session.responses,
-            response = responses.buildResponse(),
+            attributes = event.session.attributes,
+            responses = attributes.responses,
+            response = responses.buildResponse();
 
 
         if(intentName === "AnswerIntent") {
-            session.fsm.answer(response);
+            attributes.fsm.answer(response);
         } else if(intentName === "RepeatQuestionIntent") {
-            session.fsm.repeatQuestion(response);
+            attributes.fsm.repeatQuestion(response);
         } else if(intentName === "QuitIntent") {
-            session.fsm.quit(response);
+            attributes.fsm.quit(response);
         } else {
             context.fail("Unknown intent");
         }
@@ -41,14 +44,14 @@ exports.handler = function(event, context) {
 
     function handleLaunchRequest(event, context) {
         console.log("launch request");
-        var session = event.session;
+        var attributes = event.session.attributes;
 
-        session.userData = loadUserData();
-        session.responses = loadResponses(session.userData);
-        session.fsm = buildFsm(session.responses);
+        attributes.userData = loadUserData();
+        attributes.responses = loadResponses(attributes.userData);
+        attributes.fsm = buildFsm(attributes.responses);
 
-        var response = session.responses.buildResponse();
-        session.fsm.start(response);
+        var response = attributes.responses.buildResponse();
+        attributes.fsm.start(response);
         var alexaResponse = buildAlexaResponse(event, response);
         context.succeed(alexaResponse);
     }
@@ -60,7 +63,7 @@ exports.handler = function(event, context) {
 
         return {
             version: "1.0",
-            sessionAttributes: event.session,
+            sessionAttributes: event.session.attributes,
             response: {
                 outputSpeech: {
                     type: "SSML",

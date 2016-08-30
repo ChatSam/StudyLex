@@ -1,11 +1,11 @@
-var thing = require('./app.js');
+var thing = require('./index.js');
 var c = buildContext();
 
 
 
 var e = {
     session: {
-        new: true
+        new: true,
     },
     request: {
         type: "LaunchRequest",
@@ -18,43 +18,34 @@ console.log("message:", c.message);
 
 
 
-e = {
-    session: {},
-    request: {
-        type: "IntentRequest",
-        intent: {
-            name: "AnswerIntent"
-        },
-        requestId: 13
-    }
+e.request = {
+    type: "IntentRequest",
+    intent: {
+        name: "AnswerIntent"
+    },
+    requestId: 13
 };
 thing.handler(e, c);
 console.log("message:", c.message);
 
 
-e = {
-    session: {},
-    request: {
-        type: "IntentRequest",
-        intent: {
-            name: "RepeatQuestionIntent",
-        },
-        requestId: 13
-    }
+e.request = {
+    type: "IntentRequest",
+    intent: {
+        name: "RepeatQuestionIntent",
+    },
+    requestId: 13
 };
 thing.handler(e, c);
 console.log("message:", c.message);
 
 
-e = {
-    session: {},
-    request: {
-        type: "IntentRequest",
-        intent: {
-            name: "QuitIntent",
-        },
-        requestId: 13
-    }
+e.request = {
+    type: "IntentRequest",
+    intent: {
+        name: "QuitIntent",
+    },
+    requestId: 13
 };
 thing.handler(e, c);
 console.log("message:", c.message);
