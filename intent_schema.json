@@ -1,51 +1,16 @@
 {
     "intents": [
         {
-            "intent":"PickSubjectIntent","slots": [
-                {
-                    "name": "Subject",
-                    "type": "Subject_List"
-                }
-            ]
+            "intent": "AnswerIntent"
         },
         {
-            "intent": "AnswerOnlyIntent",
-            "slots": [
-                {
-                    "name": "Answer",
-                    "type": "Answer_List"
-                }
-            ]
+            "intent": "RepeatQuestionIntent"
         },
         {
-            "intent": "DontKnowIntent"
-        },
-        {
-            "intent": "HintIntent"
-        },
-        {
-            "intent": "MoreDetailsIntent"
-        },
-        {
-            "intent": "AMAZON.StartOverIntent"
+            "intent": "DoneIntent"
         },
         {
             "intent": "AMAZON.RepeatIntent"
-        },
-        {
-            "intent": "AMAZON.HelpIntent"
-        },
-        {
-            "intent": "AMAZON.YesIntent"
-        },
-        {
-            "intent": "AMAZON.NoIntent"
-        },
-        {
-            "intent": "AMAZON.StopIntent"
-        },
-        {
-            "intent": "AMAZON.CancelIntent"
         }
     ]
 }

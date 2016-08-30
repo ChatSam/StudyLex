@@ -9,61 +9,69 @@ exports.handler = function(event, context) {
 
     if(event.request.type === "LaunchRequest") {
         //TODO refactor into promise
-        handleLaunchRequest(context);
+        handleLaunchRequest(event, context);
     } else if(event.request.type === "IntentRequest") {
         //TODO refactor into promise
-        handleIntentRequest(context.responses, event, context);
+        handleIntentRequest(event, context);
     }
 
-    function handleIntentRequest(responses, event, context) {
+    function handleIntentRequest(event, context) {
         console.log("intent request");
 
         var intent = event.request.intent,
             intentName = intent.name,
-            response = responses.buildResponse();
+            session = event.session,
+            responses = event.session.responses,
+            response = responses.buildResponse(),
+
 
         if(intentName === "AnswerIntent") {
-            context.fsm.answer(response);
+            session.fsm.answer(response);
         } else if(intentName === "RepeatQuestionIntent") {
-            context.fsm.repeatQuestion(response);
+            session.fsm.repeatQuestion(response);
         } else if(intentName === "QuitIntent") {
-            context.fsm.quit(response);
+            session.fsm.quit(response);
         } else {
-            context.fsm.fail("Unknown intent");
+            context.fail("Unknown intent");
         }
 
-        var alexaResponse = buildAlexaResponse(response);
+        var alexaResponse = buildAlexaResponse(event, response);
         context.succeed(alexaResponse);
     }
 
-    function handleLaunchRequest(context) {
+    function handleLaunchRequest(event, context) {
         console.log("launch request");
-        
-        context.userData = loadUserData();
-        context.responses = loadResponses(context.userData);
-        context.fsm = buildFsm(context.responses);
+        var session = event.session;
 
-        var response = context.responses.buildResponse();
-        context.fsm.start(response);
-        var alexaResponse = buildAlexaResponse(response);
+        session.userData = loadUserData();
+        session.responses = loadResponses(session.userData);
+        session.fsm = buildFsm(session.responses);
+
+        var response = session.responses.buildResponse();
+        session.fsm.start(response);
+        var alexaResponse = buildAlexaResponse(event, response);
         context.succeed(alexaResponse);
     }
 
-    function buildAlexaResponse(response) {
+    function buildAlexaResponse(event, response) {
         var msg = _.join(response.message, " "),
             template = _.template("<speak><%- msg %></speak>"),
             output = template({msg: msg});
 
         return {
-            outputSpeech: {
-                type: "SSML",
-                ssml: output
-            },
-            // card?
-            reprompt: {
+            version: "1.0",
+            sessionAttributes: event.session,
+            response: {
                 outputSpeech: {
                     type: "SSML",
                     ssml: output
+                },
+                // card?
+                reprompt: {
+                    outputSpeech: {
+                        type: "SSML",
+                        ssml: output
+                    }
                 }
             }
         };

@@ -1,35 +1,13 @@
-HintIntent give me a hint
-HintIntent hint
-HintIntent i'd like a hint
-HintIntent i'm stuck
-HintIntent can i have a hint
-HintIntent hint please
+AnswerIntent please give me the answer
+AnswerIntent give me the answer
+AnswerIntent give me the answer please
+AnswerIntent answer please
 
-MoreDetailsIntent explain
-MoreDetailsIntent give me more
-MoreDetailsIntent more details
-MoreDetailsIntent explain please
-MoreDetailsIntent tell me more
+DoneIntent i'm done
+DoneIntent stop
+DoneIntent goodbye
 
-
-AMAZON.StartOverIntent start game
-AMAZON.StartOverIntent new game
-AMAZON.StartOverIntent start
-AMAZON.StartOverIntent start new game
-
-DontKnowIntent i don't know
-DontKnowIntent don't know
-DontKnowIntent skip
-DontKnowIntent i don't know that
-DontKnowIntent who knows
-DontKnowIntent i don't know this question
-DontKnowIntent i don't know that one
-DontKnowIntent dunno
-
-handlePickSubjectRequest select {Subject} as subject
- 
-
-
-AnswerOnlyIntent {purple|Answer}
-AnswerOnlyIntent {red|Answer} 
-AnswerOnlyIntent {green|Answer}
+RepeatQuestionIntent repeat the question please
+RepeatQuestionIntent please repeat the question
+RepeatQuestionIntent repeat that
+RepeatQuestionIntent i didn't get that
