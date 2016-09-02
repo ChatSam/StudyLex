@@ -1,13 +1,17 @@
 exports.handler = function(event, context) {
-    console.log("app handler");
-
     var _ = require("lodash");
+
+    var template = _.template("applicationId: <%- appId %> || requestId: <%- reqId %> || sessionId: <%- sessId %>");
+    console.log(template({ 
+        appId: event && event.session && event.session.application && event.session.application.applicationId,
+        reqId: event && event.request && event.request.requestId,
+        sessId: event && event.session && event.session.sessionId
+    }));
 
     // probably a better way to handle this
     event.session.attributes = event.session.attributes || {};
 
     if (event.session.new) {
-        console.log("new session");
     }
 
     if(event.request.type === "LaunchRequest") {
@@ -19,41 +23,54 @@ exports.handler = function(event, context) {
     }
 
     function handleIntentRequest(event, context) {
-        console.log("intent request");
-
+        console.log(event.session.attributes);
         var intent = event.request.intent,
             intentName = intent.name,
             attributes = event.session.attributes,
-            responses = attributes.responses,
+            responses = loadResponses(attributes.userData, attributes.currentQuestion),
+            fsm = buildFsm(responses, attributes.fsmState),
             response = responses.buildResponse();
 
 
         if(intentName === "AnswerIntent") {
-            attributes.fsm.answer(response);
+            fsm.answer(response);
         } else if(intentName === "RepeatQuestionIntent") {
-            attributes.fsm.repeatQuestion(response);
-        } else if(intentName === "QuitIntent") {
-            attributes.fsm.quit(response);
+            fsm.repeatQuestion(response);
+        } else if(intentName === "DoneIntent") {
+            fsm.quit(response);
         } else {
             context.fail("Unknown intent");
         }
+
+        attributes.fsmState = fsm.state;
+        attributes.currentQuestion = responses.getCurrentQuestion();
 
         var alexaResponse = buildAlexaResponse(event, response);
         context.succeed(alexaResponse);
     }
 
     function handleLaunchRequest(event, context) {
-        console.log("launch request");
         var attributes = event.session.attributes;
+        console.log("handle launch");
 
-        attributes.userData = loadUserData();
-        attributes.responses = loadResponses(attributes.userData);
-        attributes.fsm = buildFsm(attributes.responses);
+        loadUserData(attributes.userData).then(ud => {
+            console.log("promise resolved");
+            attributes.userData = ud;
+            var responses = loadResponses(attributes.userData, -1); // ugly hack
+            var fsm = buildFsm(responses);
 
-        var response = attributes.responses.buildResponse();
-        attributes.fsm.start(response);
-        var alexaResponse = buildAlexaResponse(event, response);
-        context.succeed(alexaResponse);
+            var response = responses.buildResponse();
+            fsm.start(response);
+            attributes.fsmState = fsm.state;
+            attributes.currentQuestion = responses.getCurrentQuestion();
+
+            var alexaResponse = buildAlexaResponse(event, response);
+            context.succeed(alexaResponse);
+        }, obj => {
+            console.log("it failed", obj);
+        }).catch(err => {
+            context.fail(err);
+        });
     }
 
     function buildAlexaResponse(event, response) {
@@ -75,42 +92,55 @@ exports.handler = function(event, context) {
                         type: "SSML",
                         ssml: output
                     }
-                }
-            }
+                },
+                shouldEndSession: response.shouldEnd
+            },
         };
     }
 
-    function loadResponses(userData) {
-        return require('./responses.js')(userData);
+    function loadResponses(userData, currentQuestion) {
+        return require('./responses.js')(userData, currentQuestion);
     }
 
-    function loadUserData() {
-        return {
-            questions: [
-                {
-                    question: "what's my age again",
-                    answer: 23
-                },
-                {
-                    question: "who did I fall in love with",
-                    answer: "the girl at the rock show"
-                },
-                {
-                    question: "how many times did I blink",
-                    answer: 182
-                }
-            ],
-            appName: "The Factory"
-        };
+    function loadUserData(userData) {
+        if(userData) {
+            return new Promise(function(resolve, reject) {
+                resolve(userData);
+            });
+        } else {
+            return new Promise(function(resolve, reject) {
+                var http = require('http');
+                http.get('http://elevate8.azurewebsites.net/flashcards/cards', response => {
+                    console.log("response");
+                    var data = "";
+
+                    response.on('data', function(chunk) {
+                        // console.log("chunk", chunk);
+                        data += chunk;
+                    });
+
+                    response.on('end', function() {
+                        console.log(data);
+                        resolve({
+                            questions: JSON.parse(data),
+                            appName: "elevate"
+                        });
+                    });
+                    
+                    response.on('error', function(ex) {
+                        reject(ex);
+                    });
+                });
+            });
+        }        
     }
 
-    function buildFsm(responses) {
+    function buildFsm(responses, initialState) {
         try {
             var fsmGenerator = require('./fsm.js'),
-                fsm = fsmGenerator();
+                fsm = fsmGenerator(initialState);
 
             fsm.on("transition", function(data) {
-                console.log("transition", "from:", data.fromState, "to:", data.toState);
             });
 
             fsm.on("welcome", function(response) {

@@ -1,9 +1,8 @@
-module.exports = function(userData) {
-
+module.exports = function(userData, currentQuestion) {
     var _ = require('lodash'),
         self = this;
     
-    self.currentQuestion = -1;
+    self.currentQuestion = currentQuestion;
 
     return {
         handleWelcome: handleWelcome,
@@ -11,16 +10,22 @@ module.exports = function(userData) {
         handleRepeatQuestion: handleRepeatQuestion,
         handleAnswer: handleAnswer,
         handleDone: handleDone,
-        buildResponse: buildResponse
+        buildResponse: buildResponse,
+        getCurrentQuestion: getCurrentQuestion
     };
 
     function handleWelcome(response) {
         //TODO build off of userData
-        response.message.push("Welcome to the Factory.");
+        var template = _.template("Welcome to <%- appName %>.");
+        var text = template({appName: userData.appName});
+        console.log(text);
+        response.message.push(text);
     }
 
     function handleQuestion(response) {
+        console.log(self.currentQuestion);
         self.currentQuestion++;
+        console.log(self.currentQuestion);
         var q = userData.questions[self.currentQuestion],
             template = _.template("Question <%= num %>. <%= question %>."),
             text = template({ num: self.currentQuestion + 1, question: q.question });
@@ -41,7 +46,6 @@ module.exports = function(userData) {
 
 
         // var q = userData.questions[self.currentQuestion];
-        // console.log(q);
         // response.message.push(userData.questions[self.currentQuestion].answer);
     }
 
@@ -51,8 +55,13 @@ module.exports = function(userData) {
 
     function buildResponse() {
         return {
-            message: []
+            message: [],
+            shouldEnd: false
         };
+    }
+
+    function getCurrentQuestion() {
+        return self.currentQuestion;
     }
 }
 

@@ -13,6 +13,5 @@
     "lodash": "^4.15.0",
     "machina": "^2.0.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

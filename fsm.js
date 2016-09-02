@@ -1,4 +1,4 @@
-module.exports = function() { 
+module.exports = function(initialState) { 
     var machina = require('machina');
 
     var fsm = new machina.Fsm({
@@ -7,7 +7,7 @@ module.exports = function() {
         },
 
         namespace: "questions",
-        initialState: "initialize",
+        initialState: initialState || "initialize",
 
         states: {
             initialize: {
@@ -55,6 +55,7 @@ module.exports = function() {
             },
             done: {
                 _onEnter: function(response) {
+                    response.shouldEnd = true;
                     this.emit("done", response);
                 }
             }

@@ -14,41 +14,42 @@ var e = {
 };
 
 thing.handler(e, c);
-console.log("message:", c.message);
+
+setTimeout(() => console.log("message:", c.message), 5000);
 
 
 
-e.request = {
-    type: "IntentRequest",
-    intent: {
-        name: "AnswerIntent"
-    },
-    requestId: 13
-};
-thing.handler(e, c);
-console.log("message:", c.message);
+// e.request = {
+//     type: "IntentRequest",
+//     intent: {
+//         name: "AnswerIntent"
+//     },
+//     requestId: 13
+// };
+// thing.handler(e, c);
+// console.log("message:", c.message);
 
 
-e.request = {
-    type: "IntentRequest",
-    intent: {
-        name: "RepeatQuestionIntent",
-    },
-    requestId: 13
-};
-thing.handler(e, c);
-console.log("message:", c.message);
+// e.request = {
+//     type: "IntentRequest",
+//     intent: {
+//         name: "RepeatQuestionIntent",
+//     },
+//     requestId: 13
+// };
+// thing.handler(e, c);
+// console.log("message:", c.message);
 
 
-e.request = {
-    type: "IntentRequest",
-    intent: {
-        name: "QuitIntent",
-    },
-    requestId: 13
-};
-thing.handler(e, c);
-console.log("message:", c.message);
+// e.request = {
+//     type: "IntentRequest",
+//     intent: {
+//         name: "QuitIntent",
+//     },
+//     requestId: 13
+// };
+// thing.handler(e, c);
+// console.log("message:", c.message);
 
 
 function buildContext() {
