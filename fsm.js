@@ -18,42 +18,57 @@ module.exports = function(initialState) {
             welcome: {
                 _onEnter: function(response) {
                     this.emit("welcome", response);
-                    this.transition("question", response);
+                },
+                repeat: function(response) {
+                    this.transition("repeatWelcome");
+                },
+                yes: function(response) {
+                    this.transition("step");
+                },
+                no: function(response) {
+                    this.transition("stop", response);
+                },
+                stop: function(response) {
+                    this.transition("stop", response);
+                }
+            },
+            repeatWelcome: {
+                _onEnter: function(response) {
+                    this.emit("repeatWelcome", response);
+                    this.transition("welcome");
+                }
+            },
+
+
+            step: {
+                _onEnter: function(response) {
+                    this.emit("step", response);
+                },
+                repeat: function(response) {
+                    this.transition("repeatStep", response);
+                },
+                next: function(response) {
+                    this.transition("nextStep", response);
                 },
                 quit: function(response) {
                     this.transition("done", response);
                 }
             },
-            question: {
+            nextStep: {
                 _onEnter: function(response) {
-                    this.emit("question", response);
-                },
-                repeatQuestion: function(response) {
-                    this.transition("repeatQuestion", response);
-                },
-                answer: function(response) {
-                    this.transition("answer", response);
-                },
-                quit: function(response) {
-                    this.transition("done", response);
+                    this.emit("nextStep", response);
+                    this.transition("step", response);
                 }
             },
-            repeatQuestion: {
+            repeatStep: {
                 _onEnter: function(response) {
-                    this.emit("repeatQuestion", response);
-                    this.transition("question", response);
+                    this.emit("repeatStep", response);
+                    this.transition("step", response);
                 }
             },
-            answer: {
-                _onEnter: function(response) {
-                    this.emit("answer", response);
-                    this.transition("question", response);
-                },
-                quit: function(response) {
-                    this.transition("done", response);
-                }
-            },
-            done: {
+
+
+            stop: {
                 _onEnter: function(response) {
                     response.shouldEnd = true;
                     this.emit("done", response);

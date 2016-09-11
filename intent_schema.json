@@ -1,16 +1,22 @@
 {
     "intents": [
         {
-            "intent": "AnswerIntent"
+            "intent": "AMAZON.NextIntent"
         },
         {
-            "intent": "RepeatQuestionIntent"
-        },
-        {
-            "intent": "DoneIntent"
+            "intent": "AMAZON.HelpIntent"
         },
         {
             "intent": "AMAZON.RepeatIntent"
+        },
+        {
+            "intent": "AMAZON.StopIntent"
+        },
+        {
+            "intent": "AMAZON.YesIntent"
+        },
+        {
+            "intent": "AMAZON.NoIntent"
         }
     ]
 }

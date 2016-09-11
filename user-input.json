@@ -1,0 +1,22 @@
+{
+    "appName": "Ryan's Awesome App",
+    "appDescription": "Build an Alexa App",
+    "steps": [
+        {
+            "num": 1,
+            "step": "Go to elevate learning dot co"
+        },
+        {
+            "num": 2,
+            "step": "Make an account"
+        },
+        {
+            "num": 3,
+            "step": "Follow the instructions"
+        },
+        {
+            "num": 4,
+            "step": "Profit"
+        }
+    ]
+}

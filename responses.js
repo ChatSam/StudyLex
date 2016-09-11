@@ -1,56 +1,46 @@
-module.exports = function(userData, currentQuestion) {
+module.exports = function(userData, currentStep) {
     var _ = require('lodash'),
         self = this;
     
-    self.currentQuestion = currentQuestion;
+    self.currentStep = currentStep;
 
     return {
         handleWelcome: handleWelcome,
-        handleQuestion: handleQuestion,
-        handleRepeatQuestion: handleRepeatQuestion,
-        handleAnswer: handleAnswer,
-        handleDone: handleDone,
+        handleStep: handleStep,
+        handleNextStep: handleNextStep,
+        handleRepeatStep: handleRepeatStep,
+        handleStop: handleStop,
         buildResponse: buildResponse,
-        getCurrentQuestion: getCurrentQuestion
+        getCurrentStep: getCurrentStep
     };
 
     function handleWelcome(response) {
         //TODO build off of userData
-        var template = _.template("Welcome to <%- appName %>.");
-        var text = template({appName: userData.appName});
-        console.log(text);
+        var template = _.template(
+            "Welcome to <%- appName %>, instructions to <%- appDescription ->. Would you like to start?");
+        var text = template({appName: userData.appName, appDescription: userData.appDescription});
         response.message.push(text);
     }
 
-    function handleQuestion(response) {
-        console.log(self.currentQuestion);
+    function handleStep(response) {
+        var step = userData.steps[self.currentStep],
+            template = _.template("Step <%= num %>. <%= step %>."),
+            text = template({ num: step.num + 1, step: step.step });
+
+        response.message.push(text);
+    }
+
+    function handleNextStep(response) {
         self.currentQuestion++;
-        console.log(self.currentQuestion);
-        var q = userData.questions[self.currentQuestion],
-            template = _.template("Question <%= num %>. <%= question %>."),
-            text = template({ num: self.currentQuestion + 1, question: q.question });
-
-        response.message.push(text);
     }
 
-    function handleRepeatQuestion(response) {
-        self.currentQuestion--; // will immediately be incremented by handleQuestion
+    function handleRepeatStep(response) {
     }
 
-    function handleAnswer(response) {
-        var q = userData.questions[self.currentQuestion],
-            template = _.template("The answer is <%= answer %>."),
-            text = template({ answer: q.answer });
-
-        response.message.push(text);
-
-
-        // var q = userData.questions[self.currentQuestion];
-        // response.message.push(userData.questions[self.currentQuestion].answer);
-    }
-
-    function handleDone(response) {
-        response.message.push("Goodbye");
+    function handleStop(response) {
+        var template = _.template(
+            "Thank you for using  <%- appName %>.";
+        var text = template({appName: userData.appName});
     }
 
     function buildResponse() {
@@ -60,8 +50,8 @@ module.exports = function(userData, currentQuestion) {
         };
     }
 
-    function getCurrentQuestion() {
-        return self.currentQuestion;
+    function getCurrentStep() {
+        return self.currentStepn;
     }
 }
 

@@ -108,30 +108,35 @@ exports.handler = function(event, context) {
                 resolve(userData);
             });
         } else {
-            return new Promise(function(resolve, reject) {
-                var http = require('http');
-                http.get('http://elevate8.azurewebsites.net/flashcards/cards', response => {
-                    console.log("response");
-                    var data = "";
+            var fs = require('fs');
+            var obj = JSON.parse(fs.readFileSync('file', 'utf8'));
+            
+            return obj;
 
-                    response.on('data', function(chunk) {
-                        // console.log("chunk", chunk);
-                        data += chunk;
-                    });
+            // return new Promise(function(resolve, reject) {
+            //     var http = require('http');
+            //     http.get('http://elevate8.azurewebsites.net/flashcards/cards', response => {
+            //         console.log("response");
+            //         var data = "";
 
-                    response.on('end', function() {
-                        console.log(data);
-                        resolve({
-                            questions: JSON.parse(data),
-                            appName: "elevate"
-                        });
-                    });
+            //         response.on('data', function(chunk) {
+            //             // console.log("chunk", chunk);
+            //             data += chunk;
+            //         });
+
+            //         response.on('end', function() {
+            //             console.log(data);
+            //             resolve({
+            //                 questions: JSON.parse(data),
+            //                 appName: "elevate"
+            //             });
+            //         });
                     
-                    response.on('error', function(ex) {
-                        reject(ex);
-                    });
-                });
-            });
+            //         response.on('error', function(ex) {
+            //             reject(ex);
+            //         });
+            //     });
+            // });
         }        
     }
 
