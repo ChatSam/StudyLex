@@ -1,0 +1,30 @@
+{
+    "manual": "Ryan's Awesome App",
+    "appDescription": "Build an Alexa App",
+    "instructions": [
+        {
+            "stepnumber": 1,
+            "instruction": "Go to elevate learning dot co",
+            "helplevelone": "Did you align the screws?",
+            "helpleveltwo": "Do you have the correct screws?"
+        },
+        {
+          "stepnumber": 2,
+          "instruction": "Go to elevate learning dot co",
+          "helplevelone": "Did you align the screws?",
+          "helpleveltwo": "Do you have the correct screws?"
+        },
+        {
+          "stepnumber": 3,
+          "instruction": "Go to elevate learning dot co",
+          "helplevelone": "Did you align the screws?",
+          "helpleveltwo": "Do you have the correct screws?"
+        },
+        {
+          "stepnumber": 4,
+          "instruction": "Go to elevate learning dot co",
+          "helplevelone": "Did you align the screws?",
+          "helpleveltwo": "Do you have the correct screws?"
+        }
+    ]
+}
