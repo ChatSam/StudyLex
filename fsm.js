@@ -20,10 +20,10 @@ module.exports = function(initialState) {
                     this.emit("welcome", response);
                 },
                 repeat: function(response) {
-                    this.transition("repeatWelcome");
+                    this.transition("repeatWelcome", response);
                 },
                 yes: function(response) {
-                    this.transition("step");
+                    this.transition("step", response);
                 },
                 no: function(response) {
                     this.transition("stop", response);
@@ -42,6 +42,7 @@ module.exports = function(initialState) {
 
             step: {
                 _onEnter: function(response) {
+                    console.log("step _onenter");
                     this.emit("step", response);
                 },
                 repeat: function(response) {
@@ -50,8 +51,8 @@ module.exports = function(initialState) {
                 next: function(response) {
                     this.transition("nextStep", response);
                 },
-                quit: function(response) {
-                    this.transition("done", response);
+                stop: function(response) {
+                    this.transition("stop", response);
                 }
             },
             nextStep: {
@@ -71,7 +72,7 @@ module.exports = function(initialState) {
             stop: {
                 _onEnter: function(response) {
                     response.shouldEnd = true;
-                    this.emit("done", response);
+                    this.emit("stop", response);
                 }
             }
         },
@@ -81,16 +82,25 @@ module.exports = function(initialState) {
             this.handle("start", response);
         },
 
-        answer: function(response) {
-            this.handle("answer", response);
+        yes: function(response) {
+            console.log('fsm yes')
+            this.handle("yes", response);
         },
 
-        repeatQuestion: function(response) {
-            this.handle("repeatQuestion", response)
+        repeat: function(response) {
+            this.handle("repeat", response);
         },
 
-        quit: function(response) {
-            this.handle("quit", response);
+        no: function(response) {
+            this.handle("no", response)
+        },
+
+        next: function(response) {
+            this.handle("next", response)
+        },
+
+        stop: function(response) {
+            this.handle("stop", response);
         }
     });
 

@@ -23,27 +23,35 @@ exports.handler = function(event, context) {
     }
 
     function handleIntentRequest(event, context) {
-        console.log(event.session.attributes);
+        console.log("intent request");
+        console.log(event);
         var intent = event.request.intent,
             intentName = intent.name,
             attributes = event.session.attributes,
-            responses = loadResponses(attributes.userData, attributes.currentQuestion),
+            responses = loadResponses(attributes.userData, attributes.currentStep),
             fsm = buildFsm(responses, attributes.fsmState),
             response = responses.buildResponse();
 
 
-        if(intentName === "AnswerIntent") {
-            fsm.answer(response);
-        } else if(intentName === "RepeatQuestionIntent") {
-            fsm.repeatQuestion(response);
-        } else if(intentName === "DoneIntent") {
-            fsm.quit(response);
+        if(intentName === "AMAZON.NextIntent") {
+            fsm.next(response);
+        } else if(intentName === "AMAZON.HelpIntent") {
+            fsm.help(response);
+        } else if(intentName === "AMAZON.RepeatIntent") {
+            fsm.repeat(response);
+        } else if(intentName === "AMAZON.StopIntent") {
+            fsm.stop(response);
+        } else if(intentName === "AMAZON.YesIntent") {
+            fsm.yes(response);
+        } else if(intentName === "AMAZON.NoIntent") {
+            console.log('yes intent');
+            fsm.no(response);
         } else {
             context.fail("Unknown intent");
         }
 
         attributes.fsmState = fsm.state;
-        attributes.currentQuestion = responses.getCurrentQuestion();
+        attributes.currentStep = responses.getCurrentStep();
 
         var alexaResponse = buildAlexaResponse(event, response);
         context.succeed(alexaResponse);
@@ -56,14 +64,15 @@ exports.handler = function(event, context) {
         loadUserData(attributes.userData).then(ud => {
             console.log("promise resolved");
             attributes.userData = ud;
-            var responses = loadResponses(attributes.userData, -1); // ugly hack
+            var responses = loadResponses(attributes.userData, 0); 
             var fsm = buildFsm(responses);
 
             var response = responses.buildResponse();
             fsm.start(response);
             attributes.fsmState = fsm.state;
-            attributes.currentQuestion = responses.getCurrentQuestion();
+            attributes.currentStep = responses.getCurrentStep();
 
+            console.log(attributes);
             var alexaResponse = buildAlexaResponse(event, response);
             context.succeed(alexaResponse);
         }, obj => {
@@ -98,8 +107,8 @@ exports.handler = function(event, context) {
         };
     }
 
-    function loadResponses(userData, currentQuestion) {
-        return require('./responses.js')(userData, currentQuestion);
+    function loadResponses(userData, currentStep) {
+        return obj = require('./responses.js')(userData, currentStep);
     }
 
     function loadUserData(userData) {
@@ -109,10 +118,12 @@ exports.handler = function(event, context) {
             });
         } else {
             var fs = require('fs');
-            var obj = JSON.parse(fs.readFileSync('file', 'utf8'));
+            // var obj = JSON.parse(fs.readFileSync('user-input.json', 'utf8'));
             
-            return obj;
-
+            // return obj;
+            return new Promise(function(resolve, reject) {
+                resolve(JSON.parse(fs.readFileSync('user-input.json')));
+            });
             // return new Promise(function(resolve, reject) {
             //     var http = require('http');
             //     http.get('http://elevate8.azurewebsites.net/flashcards/cards', response => {
@@ -152,20 +163,20 @@ exports.handler = function(event, context) {
                 responses.handleWelcome(response);
             });
 
-            fsm.on("question", function(response) {
-                responses.handleQuestion(response);
+            fsm.on("step", function(response) {
+                responses.handleStep(response);
             });
 
-            fsm.on("repeatQuestion", function(response) {
-                responses.handleRepeatQuestion(response);
+            fsm.on("nextStep", function(response) {
+                responses.handleNextStep(response);
             });
 
-            fsm.on("answer", function(response) {
-                responses.handleAnswer(response);
-            });        
+            fsm.on("repeatStep", function(response) {
+                responses.handleRepeatStep(response);
+            });
 
-            fsm.on("done", function(response) {
-                responses.handleDone(response);
+            fsm.on("stop", function(response) {
+                responses.handleStop(response);
             });
 
             return fsm;

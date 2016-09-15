@@ -1,7 +1,11 @@
-AMAZON.NextIntent
+AMAZON.NextIntent next
 
-AMAZON.HelpIntent
+AMAZON.HelpIntent help 
 
-AMAZON.RepeatIntent 
+AMAZON.RepeatIntent repeat
 
-AMAZON.StopIntent
+AMAZON.StopIntent stop
+
+AMAZON.YesIntent yes
+
+AMAZON.NoIntent no
