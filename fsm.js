@@ -57,6 +57,7 @@ module.exports = function(initialState) {
             },
             nextStep: {
                 _onEnter: function(response) {
+                    console.log("nextStep");
                     this.emit("nextStep", response);
                     this.transition("step", response);
                 }

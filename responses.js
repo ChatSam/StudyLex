@@ -20,7 +20,7 @@ module.exports = function(userData, currentStep) {
     function handleWelcome(response) {
         //TODO build off of userData
         var template = _.template(
-            "Welcome to <%- appName %>, instructions to <%- appDescription %>. Would you like to start?");
+            "Welcome to <%- appName %>, instructions to <%- appDescription %>. Would you like to start.");
         var text = template({appName: userData.appName, appDescription: userData.appDescription});
         console.log(text);
         response.message.push(text);
@@ -43,7 +43,7 @@ module.exports = function(userData, currentStep) {
     }
 
     function handleNextStep(response) {
-        self.currentQuestion++;
+        self.currentStep++;
     }
 
     function handleRepeatStep(response) {
