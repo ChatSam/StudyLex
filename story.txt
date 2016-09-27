@@ -10,6 +10,7 @@ Help
     You can say "Next" to move to the next instruction.
     "Repeat" to repeat an instruction
     "Start over" to start back at the first instruction
+    Additionally, some steps have additional help. Ask for "More Information" to learn more
 
 instructions
     Step #. {{ stepDescription }}
@@ -18,6 +19,7 @@ instructions
         last step -> Conclusion
     Repeat -> step #
     Start Over -> step 1
+    More information -> access more information for the step
 
 Conclusion
     Thank you for using {{ appName }}. 

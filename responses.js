@@ -1,10 +1,10 @@
-module.exports = function(userData, currentStep) {
+module.exports = function(userData, appState) {
     console.log('responses file');
-    console.log(userData, currentStep);
+    console.log(userData, appState);
     var _ = require('lodash'),
         self = this;
     
-    self.currentStep = currentStep;
+    self.appState = appState;
     self.userData = userData;
 
     return {
@@ -13,8 +13,11 @@ module.exports = function(userData, currentStep) {
         handleNextStep: handleNextStep,
         handleRepeatStep: handleRepeatStep,
         handleStop: handleStop,
+        handleMoreInformation: handleMoreInformation,
+        handleHelp: handleHelp,
         buildResponse: buildResponse,
-        getCurrentStep: getCurrentStep
+        getCurrentStep: getCurrentStep,
+        getCurrentMoreInformationLevel: getCurrentMoreInformationLevel
     };
 
     function handleWelcome(response) {
@@ -27,31 +30,66 @@ module.exports = function(userData, currentStep) {
     }
 
     function handleStep(response) {
-       console.log('handle step');
-       
-       console.log(self.userData);
-       console.log(self.currentStep);
-       var step = self.userData.steps[self.currentStep],
-            template = _.template("Step <%= num %>. <%= step %>."),
-            text = template({ num: step.num, step: step.step });
+        console.log('handle step');
+        
+        console.log(self.userData);
+        console.log(getCurrentStep());
+        var step = self.userData.steps[getCurrentStep()];
 
-        // var step = userData.steps[self.currentStep],
-        //     template = _.template("Step <%= num %>. <%= step %>."),
-        //     text = template({ num: step.num + 1, step: step.step });
+        var text;
+        if(step) {
+            var template = _.template("Step <%= num %>. <%= step %>.");
+            text = template({ num: step.num, step: step.step });
+        } else {
+            var template = _.template("Thank you for using <%= appName %>.");
+            text = template({appName: userData.appName });
+            response.shouldEnd = true;
+        }
 
         response.message.push(text);
+        return shouldEnd;
     }
 
     function handleNextStep(response) {
-        self.currentStep++;
+        self.appState.currentStep++;
+        self.appState.moreInformationLevel = 0;
     }
 
     function handleRepeatStep(response) {
     }
 
+    function handleMoreInformation(response) {
+        console.log('moreInformation');
+       
+        console.log(self.userData);
+        console.log(getCurrentStep());
+
+        var step = self.userData.steps[getCurrentStep()],
+            moreInfoLevel = getCurrentMoreInformationLevel(),
+            moreInfo = step.help[moreInfoLevel];
+
+        var text;
+        if(moreInfo) {
+            text = moreInfo.text;
+        } else {
+            if(moreInfoLevel == 0) {
+                text = "No additional information for this step";
+            } else {
+                text = "No more additional information for this step";
+            }
+        }
+
+        response.message.push(text);
+    }
+
+    function handleHelp(response) {
+
+    }
+
     function handleStop(response) {
         var template = _.template(
-            "Thank you for using  <%- appName %>.");
+            "Thank you for using  <%- appName %>."
+        );
         var text = template({appName: userData.appName});
     }
 
@@ -63,7 +101,10 @@ module.exports = function(userData, currentStep) {
     }
 
     function getCurrentStep() {
-        return self.currentStep;
+        return self.appState.currentStep;
+    }
+
+    function getCurrentMoreInformationLevel() {
+        return self.appState.currentMoreInformationLevel;
     }
 }
-

@@ -28,10 +28,9 @@ exports.handler = function(event, context) {
         var intent = event.request.intent,
             intentName = intent.name,
             attributes = event.session.attributes,
-            responses = loadResponses(attributes.userData, attributes.currentStep),
+            responses = loadResponses(attributes.userData, attributes.appState),
             fsm = buildFsm(responses, attributes.fsmState),
             response = responses.buildResponse();
-
 
         if(intentName === "AMAZON.NextIntent") {
             fsm.next(response);
@@ -44,14 +43,16 @@ exports.handler = function(event, context) {
         } else if(intentName === "AMAZON.YesIntent") {
             fsm.yes(response);
         } else if(intentName === "AMAZON.NoIntent") {
-            console.log('yes intent');
             fsm.no(response);
+        } else if(intentName == "MoreInformation") {
+            fsm.moreInformation(response);
         } else {
             context.fail("Unknown intent");
         }
 
         attributes.fsmState = fsm.state;
-        attributes.currentStep = responses.getCurrentStep();
+        attributes.appState.currentStep = responses.getCurrentStep();
+        attributes.appState.currentMoreInformationLevel = responses.getCurrentMoreInformationLevel();
 
         var alexaResponse = buildAlexaResponse(event, response);
         context.succeed(alexaResponse);
@@ -64,13 +65,20 @@ exports.handler = function(event, context) {
         loadUserData(attributes.userData).then(ud => {
             console.log("promise resolved");
             attributes.userData = ud;
-            var responses = loadResponses(attributes.userData, 0); 
+            attributes.appState = {
+                currentStep: 0,
+                currentMoreInformationLevel: 0
+            };
+            var responses = loadResponses(
+                attributes.userData, attributes.appState); 
             var fsm = buildFsm(responses);
 
             var response = responses.buildResponse();
             fsm.start(response);
             attributes.fsmState = fsm.state;
-            attributes.currentStep = responses.getCurrentStep();
+            attributes.appState.currentStep = responses.getCurrentStep();
+            attributes.appState.currentMoreInformationLevel = 
+            responses.getCurrentMoreInformationLevel();
 
             console.log(attributes);
             var alexaResponse = buildAlexaResponse(event, response);
@@ -174,6 +182,14 @@ exports.handler = function(event, context) {
             fsm.on("repeatStep", function(response) {
                 responses.handleRepeatStep(response);
             });
+
+            fsm.on("moreInformation", function(response) {
+                responses.handleMoreInformation(response);
+            });
+
+            fsm.on("help", function(response) {
+                responses.handleHelp(response);
+            })
 
             fsm.on("stop", function(response) {
                 responses.handleStop(response);
