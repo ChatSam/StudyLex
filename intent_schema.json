@@ -19,7 +19,13 @@
             "intent": "AMAZON.NoIntent"
         },
         {
+            "intent": "AMAZON.StartOverIntent"
+        },
+        {
             "intent": "MoreInformation"
+        },
+        {
+            "intent": "HintInformation"
         }
     ]
 }

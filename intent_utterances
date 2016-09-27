@@ -1,9 +1,8 @@
 AMAZON.NextIntent Next
-AMAZON.NextIntent Next step
+AMAZON.NextIntent Next question
 AMAZON.NextIntent Next, please
-AMAZON.NextIntent Next step, please
+AMAZON.NextIntent Next question, please
 AMAZON.NextIntent Let's move on
-AMAZON.NextIntent 
 
 AMAZON.HelpIntent Help
 AMAZON.HelpIntent Help, please
@@ -11,12 +10,13 @@ AMAZON.HelpIntent Please, help
 
 AMAZON.RepeatIntent Repeat
 AMAZON.RepeatIntent Repeat, please
+AMAZON.RepeatIntent Repeat the question
+AMAZON.RepeatIntent Repeat the question, please
+AMAZON.RepeatIntent Please, repeat the question
 AMAZON.RepeatIntent Repeat that
 AMAZON.RepeatIntent Repeat that, please
 AMAZON.RepeatIntent Please, repeat
 AMAZON.RepeatIntent Please, repeat that
-AMAZON.RepeatIntent Repeat the step please
-AMAZON.RepeatIntent Repeat that information
 
 AMAZON.StopIntent Stop
 AMAZON.StopIntent I'm done
@@ -29,6 +29,13 @@ AMAZON.YesIntent Affirmative
 
 AMAZON.NoIntent No
 AMAZON.NoIntent Nah
+
+HintIntent Hint
+HintIntent Hint, please
+HintIntent I'd like a hint
+HintIntent I need a hint
+HintIntent I want a hint
+HintIntent I would like a hint
 
 MoreInformation Please tell me more
 MoreInformation Tell me more

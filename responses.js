@@ -9,14 +9,14 @@ module.exports = function(userData, appState) {
 
     return {
         handleWelcome: handleWelcome,
-        handleStep: handleStep,
-        handleNextStep: handleNextStep,
-        handleRepeatStep: handleRepeatStep,
+        handleQuestion: handleQuestion,
+        handleNextQuestion: handleNextQuestion,
+        handleRepeatQuestion: handleRepeatQuestion,
         handleStop: handleStop,
         handleMoreInformation: handleMoreInformation,
         handleHelp: handleHelp,
         buildResponse: buildResponse,
-        getCurrentStep: getCurrentStep,
+        getCurrentQuestion: getCurrentQuestion,
         getCurrentMoreInformationLevel: getCurrentMoreInformationLevel
     };
 
@@ -29,7 +29,7 @@ module.exports = function(userData, appState) {
         response.message.push(text);
     }
 
-    function handleStep(response) {
+    function handleQuestion(response) {
         console.log('handle step');
         
         console.log(self.userData);
@@ -50,12 +50,12 @@ module.exports = function(userData, appState) {
         return shouldEnd;
     }
 
-    function handleNextStep(response) {
+    function handleNextQuestion(response) {
         self.appState.currentStep++;
         self.appState.moreInformationLevel = 0;
     }
 
-    function handleRepeatStep(response) {
+    function handleRepeatQuestion(response) {
     }
 
     function handleMoreInformation(response) {
@@ -100,11 +100,7 @@ module.exports = function(userData, appState) {
         };
     }
 
-    function getCurrentStep() {
+    function getCurrentQuestion() {
         return self.appState.currentStep;
-    }
-
-    function getCurrentMoreInformationLevel() {
-        return self.appState.currentMoreInformationLevel;
     }
 }

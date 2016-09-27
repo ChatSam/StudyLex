@@ -39,33 +39,32 @@ module.exports = function(initialState) {
                 }
             },
 
-
-            step: {
+            question: {
                 _onEnter: function(response) {
-                    console.log("step _onenter");
-                    this.emit("step", response);
+                    console.log("question _onenter");
+                    this.emit("question", response);
                 },
                 repeat: function(response) {
-                    this.transition("repeatStep", response);
+                    this.transition("repeatQuestion", response);
                 },
                 next: function(response) {
-                    this.transition("nextStep", response);
+                    this.transition("nextQuestion", response);
                 },
                 stop: function(response) {
                     this.transition("stop", response);
                 }
             },
-            nextStep: {
+            nextQuestion: {
                 _onEnter: function(response) {
-                    console.log("nextStep");
-                    this.emit("nextStep", response);
-                    this.transition("step", response);
+                    console.log("nextQuestion");
+                    this.emit("nextQuestion", response);
+                    this.transition("question", response);
                 }
             },
-            repeatStep: {
+            repeatQuestion: {
                 _onEnter: function(response) {
-                    this.emit("repeatStep", response);
-                    this.transition("step", response);
+                    this.emit("repeatQuestion", response);
+                    this.transition("question", response);
                 }
             },
 
@@ -90,6 +89,10 @@ module.exports = function(initialState) {
 
         repeat: function(response) {
             this.handle("repeat", response);
+        },
+
+        hint: function(response) {
+            this.handle("hint", response);
         },
 
         no: function(response) {

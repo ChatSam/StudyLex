@@ -1,31 +1,24 @@
 {
     "appName" : "TestApp3",
     "appDescription" : "This explain how corporations make money.",
-    "steps" : [
+    "cards" : [
         {
-            "stepnumber" : "1",
-            "instruction" : "Gather underpants.",
-            "help" : [
-                "help 1",
-                null
+            "question" : "what number is the best?",
+            "answer" : "number one",
+            "more" : "this is more",
+            "hints" : [
+                    "its the first number",
+                    "we got to be the best"
             ]
         },
         {
-            "stepnumber" : "2",
-            "instruction" : "beep",
-            "help" : [
-                "help 2",
-                "help 3"
-            ]
-        },
-        {
-            "stepnumber" : "3",
-            "instruction" : "Profit",
-            "help" : [
-                null,
-                null
+            "question" : "what number is not quite the best?",
+            "answer" : "number two",
+            "more" : "this is more",
+            "hints" : [
+                    "its the second number",
+                    "if cant be the best this is close."
             ]
         }
-    ],
-    "__v" : 0
+    ]
 }

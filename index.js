@@ -46,6 +46,8 @@ exports.handler = function(event, context) {
             fsm.no(response);
         } else if(intentName == "MoreInformation") {
             fsm.moreInformation(response);
+        } else if(intentName == "HelpInformation") {
+            fsm.hint(response);
         } else {
             context.fail("Unknown intent");
         }
@@ -67,7 +69,6 @@ exports.handler = function(event, context) {
             attributes.userData = ud;
             attributes.appState = {
                 currentStep: 0,
-                currentMoreInformationLevel: 0
             };
             var responses = loadResponses(
                 attributes.userData, attributes.appState); 
@@ -171,16 +172,16 @@ exports.handler = function(event, context) {
                 responses.handleWelcome(response);
             });
 
-            fsm.on("step", function(response) {
-                responses.handleStep(response);
+            fsm.on("question", function(response) {
+                responses.handleQuestion(response);
             });
 
-            fsm.on("nextStep", function(response) {
-                responses.handleNextStep(response);
+            fsm.on("nextQuestion", function(response) {
+                responses.handleNextQuestion(response);
             });
 
-            fsm.on("repeatStep", function(response) {
-                responses.handleRepeatStep(response);
+            fsm.on("repeatQuestion", function(response) {
+                responses.handleRepeatQuestion(response);
             });
 
             fsm.on("moreInformation", function(response) {
