@@ -81,13 +81,11 @@ module.exports = function(userData, appState) {
     }
 
     function handleNextInformation(response) {
-        console.log("handleNextInformation response");
         self.appState.currentMoreInformationLevel++;
-        console.log(getCurrentMoreInformationLevel());
     }
 
     function handleHelp(response) {
-
+        response.message.push(self.userData.help);
     }
 
     function handleStop(response) {
