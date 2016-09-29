@@ -1,0 +1,24 @@
+{
+    "appName" : "TestApp3",
+    "appDescription" : "This explain how corporations make money.",
+    "cards" : [
+        {
+            "question" : "what number is the best?",
+            "answer" : "number one",
+            "more" : "this is more",
+            "hints" : [
+                    "its the first number",
+                    "we got to be the best"
+            ]
+        },
+        {
+            "question" : "what number is not quite the best?",
+            "answer" : "number two",
+            "more" : "this is more",
+            "hints" : [
+                    "its the second number",
+                    "if cant be the best this is close."
+            ]
+        }
+    ]
+}
