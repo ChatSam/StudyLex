@@ -47,7 +47,6 @@ module.exports = function(userData, appState) {
         }
 
         response.message.push(text);
-        return shouldEnd;
     }
 
     function handleNextStep(response) {
