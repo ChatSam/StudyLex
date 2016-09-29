@@ -14,6 +14,7 @@ module.exports = function(userData, appState) {
         handleRepeatStep: handleRepeatStep,
         handleStop: handleStop,
         handleMoreInformation: handleMoreInformation,
+        handleNextInformation: handleNextInformation,
         handleHelp: handleHelp,
         buildResponse: buildResponse,
         getCurrentStep: getCurrentStep,
@@ -39,7 +40,7 @@ module.exports = function(userData, appState) {
         var text;
         if(step) {
             var template = _.template("Step <%= num %>. <%= step %>.");
-            text = template({ num: step.num, step: step.step });
+            text = template({ num: step.stepnumber, step: step.instruction });
         } else {
             var template = _.template("Thank you for using <%= appName %>.");
             text = template({appName: userData.appName });
@@ -51,7 +52,7 @@ module.exports = function(userData, appState) {
 
     function handleNextStep(response) {
         self.appState.currentStep++;
-        self.appState.moreInformationLevel = 0;
+        self.appState.currentMoreInformationLevel = 0;
     }
 
     function handleRepeatStep(response) {
@@ -59,9 +60,7 @@ module.exports = function(userData, appState) {
 
     function handleMoreInformation(response) {
         console.log('moreInformation');
-       
-        console.log(self.userData);
-        console.log(getCurrentStep());
+        console.log(getCurrentStep(), getCurrentMoreInformationLevel());
 
         var step = self.userData.steps[getCurrentStep()],
             moreInfoLevel = getCurrentMoreInformationLevel(),
@@ -69,7 +68,7 @@ module.exports = function(userData, appState) {
 
         var text;
         if(moreInfo) {
-            text = moreInfo.text;
+            text = moreInfo;
         } else {
             if(moreInfoLevel == 0) {
                 text = "No additional information for this step";
@@ -79,6 +78,12 @@ module.exports = function(userData, appState) {
         }
 
         response.message.push(text);
+    }
+
+    function handleNextInformation(response) {
+        console.log("handleNextInformation response");
+        self.appState.currentMoreInformationLevel++;
+        console.log(getCurrentMoreInformationLevel());
     }
 
     function handleHelp(response) {

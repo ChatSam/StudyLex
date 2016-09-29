@@ -3,20 +3,36 @@
     "appDescription": "Build an Alexa App",
     "steps": [
         {
-            "num": 1,
-            "step": "Go to elevate learning dot co"
+            "stepnumber": 1,
+            "instruction": "Go to elevate learning dot co",
+            "help" : [
+                "help 1",
+                null
+            ]
         },
         {
-            "num": 2,
-            "step": "Make an account"
+            "stepnumber": 2,
+            "instruction": "Make an account",
+            "help" : [
+                "help 2",
+                "help 3"
+            ]
         },
         {
-            "num": 3,
-            "step": "Follow the instructions"
+            "stepnumber": 3,
+            "instruction": "Follow the instructions",
+            "help" : [
+                null,
+                null
+            ]
         },
         {
-            "num": 4,
-            "step": "Profit"
+            "stepnumber": 4,
+            "instruction": "Profit",
+            "help" : [
+                null,
+                null
+            ]
         }
     ]
 }

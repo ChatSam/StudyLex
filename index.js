@@ -45,7 +45,7 @@ exports.handler = function(event, context) {
         } else if(intentName === "AMAZON.NoIntent") {
             fsm.no(response);
         } else if(intentName == "MoreInformation") {
-            fsm.moreInformation(response);
+            fsm.more(response);
         } else {
             context.fail("Unknown intent");
         }
@@ -53,6 +53,7 @@ exports.handler = function(event, context) {
         attributes.fsmState = fsm.state;
         attributes.appState.currentStep = responses.getCurrentStep();
         attributes.appState.currentMoreInformationLevel = responses.getCurrentMoreInformationLevel();
+        console.log(attributes);
 
         var alexaResponse = buildAlexaResponse(event, response);
         context.succeed(alexaResponse);
@@ -185,6 +186,10 @@ exports.handler = function(event, context) {
 
             fsm.on("moreInformation", function(response) {
                 responses.handleMoreInformation(response);
+            });
+
+            fsm.on("nextInformation", function(response) {
+                responses.handleNextInformation(response);
             });
 
             fsm.on("help", function(response) {
