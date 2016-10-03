@@ -1,7 +1,7 @@
 {
     "intents": [
         {
-            "intent": "AMAZON.NextIntent"
+            "intent": "AnswerIntent"
         },
         {
             "intent": "AMAZON.HelpIntent"
@@ -22,10 +22,10 @@
             "intent": "AMAZON.StartOverIntent"
         },
         {
-            "intent": "MoreInformation"
+            "intent": "MoreInformationIntent"
         },
         {
-            "intent": "HintInformation"
+            "intent": "HintIntent"
         }
     ]
 }
