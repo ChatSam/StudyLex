@@ -79,8 +79,8 @@ module.exports = function(initialState) {
                 _onEnter: function(response) {
                     this.emit("moreInformation", response);
                 },
-                next: function(response) {
-                    this.transition("nextQuestion", response);
+                answer: function(response) {
+                    this.transition("answer", response);
                 },
                 help: function(response) {
                     this.transition("help", {response: response, step: "moreInformation"});
