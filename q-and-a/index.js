@@ -44,8 +44,8 @@ exports.handler = function(event, context) {
             fsm.yes(response);
         } else if(intentName === "AMAZON.NoIntent") {
             fsm.no(response);
-        } else if(intentName == "MoreInformation") {
-            fsm.moreInformation(response);
+        } else if(intentName == "MoreInformationIntent") {
+            fsm.more(response);
         } else if(intentName == "HintInformation") {
             fsm.hint(response);
         } else {

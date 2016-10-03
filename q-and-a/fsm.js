@@ -85,8 +85,25 @@ module.exports = function(initialState) {
                 help: function(response) {
                     this.transition("help", {response: response, step: "moreInformation"});
                 },
+                hint: function(response) {
+                    this.transition("hint", response);
+                },
+                repeat: function(response) {
+                    this.transition("moreInformationRepeat", response);
+                },
+                more: function(response) {
+                    this.transition("moreInformationRepeat", response);
+                },
                 stop: function(response) {
                     this.transition("stop", response);
+                }
+            },
+
+            moreInformationRepeat: {
+                _onEnter: function(response) {
+                    console.log("more information repeat");
+                    this.emit("moreInformationRepeat", response);
+                    this.transition("moreInformation", response);
                 }
             },
 
