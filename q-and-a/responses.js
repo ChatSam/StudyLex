@@ -17,6 +17,8 @@ module.exports = function(userData, appState) {
         handleMoreInformation: handleMoreInformation,
         handleHelp: handleHelp,
         handleHint: handleHint,
+        handleNextHint: handleNextHint,
+        handleRepeatHint: handleRepeatHint,
         buildResponse: buildResponse,
         getCurrentQuestion: getCurrentQuestion,
         getCurrentHintLevel: getCurrentHintLevel
@@ -52,7 +54,14 @@ module.exports = function(userData, appState) {
 
     function handleNextQuestion(response) {
         self.appState.currentQuestion++;
-        self.appState.hintLevel = 0;
+        self.appState.currentHintLevel = 0;
+    }
+
+    function handleNextHint(response) {
+        self.appState.currentHintLevel++; 
+    }
+
+    function handleRepeatHint(response) {
     }
 
     function handleAnswer(response) {
@@ -70,11 +79,13 @@ module.exports = function(userData, appState) {
         console.log('hint');
        
         console.log(self.userData);
-        console.log(getCurrentQuestion());
+        console.log(self.appState);
 
         var question = self.userData.cards[getCurrentQuestion()],
             hintLevel = getCurrentHintLevel(),
             hint = question.hints[hintLevel];
+
+        console.log(question, hintLevel, hint);
 
         var text;
         if(hint) {
@@ -119,6 +130,6 @@ module.exports = function(userData, appState) {
     }
 
     function getCurrentHintLevel() {
-        return self.appState.getCurrentHintLevel;
+        return self.appState.currentHintLevel;
     }
 }

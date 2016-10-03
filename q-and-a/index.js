@@ -46,7 +46,7 @@ exports.handler = function(event, context) {
             fsm.no(response);
         } else if(intentName == "MoreInformationIntent") {
             fsm.more(response);
-        } else if(intentName == "HintInformation") {
+        } else if(intentName == "HintIntent") {
             fsm.hint(response);
         } else {
             context.fail("Unknown intent");
@@ -55,7 +55,7 @@ exports.handler = function(event, context) {
         attributes.fsmState = fsm.state;
         attributes.appState.currentQuestion = responses.getCurrentQuestion();
         attributes.appState.currentHintLevel = responses.getCurrentHintLevel();
-
+   
         var alexaResponse = buildAlexaResponse(event, response);
         context.succeed(alexaResponse);
     }
@@ -79,8 +79,7 @@ exports.handler = function(event, context) {
             fsm.start(response);
             attributes.fsmState = fsm.state;
             attributes.appState.currentQuestion = responses.getCurrentQuestion();
-            attributes.appState.currentHintLevel = 
-            responses.getCurrentHintLevel();
+            attributes.appState.currentHintLevel = responses.getCurrentHintLevel();
 
             console.log(attributes);
             var alexaResponse = buildAlexaResponse(event, response);
@@ -176,6 +175,14 @@ exports.handler = function(event, context) {
 
             fsm.on('stop', function(response) {
                 responses.handleStop(response);
+            });
+
+            fsm.on('nextHint', function(response) {
+                responses.handleNextHint(response);
+            });
+
+            fsm.on('repeatHint', function(response) {
+                responses.handleRepeatHint(response);
             });
 
             return fsm;

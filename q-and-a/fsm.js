@@ -38,7 +38,7 @@ module.exports = function(initialState) {
             repeatWelcome: {
                 _onEnter: function(response) {
                     this.emit("repeatWelcome", response);
-                    this.transition("welcome");
+                    this.transition("welcome", response);
                 }
             },
 
@@ -57,7 +57,7 @@ module.exports = function(initialState) {
                     this.transition("moreInformation", response);
                 },
                 hint: function(response) {
-                    this.transition("hint", reponse);
+                    this.transition("hint", response);
                 },
                 help: function(response) {
                     this.transition("help", {response: response, step: "question"});
@@ -111,14 +111,39 @@ module.exports = function(initialState) {
                 _onEnter: function(response) {
                     this.emit("hint", response);
                 },
-                next: function(response) {
-                    this.transition("nextQuestion", response);
+                answer: function(response) {
+                    this.transition("answer", response);
+                },
+                hint: function(response) {
+                    this.transition("nextHint", response);
                 },
                 help: function(response) {
                     this.transition("help", {response: response, step: "hint"});
                 },
+                more: function(response) {
+                    this.transition("moreInformation", response);
+                },
+                repeat: function(response) {
+                    this.transition("repeatHint", response);
+                },
                 stop: function(response) {
                     this.transition("stop", response);
+                }
+            },
+
+            nextHint: {
+                _onEnter: function(response) {
+                    console.log("hint repeat");
+                    this.emit("nextHint", response);
+                    this.transition("hint", response);
+                },
+            },
+
+            repeatHint: {
+                _onEnter: function(response) {
+                    console.log("repeat hint");
+                    this.emit("repeatHint", response);
+                    this.transition("hint", response);
                 }
             },
 
