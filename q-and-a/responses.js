@@ -38,8 +38,8 @@ module.exports = function(userData, appState) {
 
         var text;
         if(question) {
-            var template = _.template("<%= question %>.");
-            text = template({ question: question.question });
+            var template = _.template("Question <%= questionNumber %>. <%= question %>.");
+            text = template({ questionNumber: question.questionNumber, question: question.question });
         } else {
             var template = _.template("Thank you for using <%= appName %>.");
             text = template({appName: userData.appName });

@@ -127,36 +127,9 @@ exports.handler = function(event, context) {
             });
         } else {
             var fs = require('fs');
-            // var obj = JSON.parse(fs.readFileSync('user-input.json', 'utf8'));
-            
-            // return obj;
             return new Promise(function(resolve, reject) {
                 resolve(JSON.parse(fs.readFileSync('user-input.json')));
             });
-            // return new Promise(function(resolve, reject) {
-            //     var http = require('http');
-            //     http.get('http://elevate8.azurewebsites.net/flashcards/cards', response => {
-            //         console.log("response");
-            //         var data = "";
-
-            //         response.on('data', function(chunk) {
-            //             // console.log("chunk", chunk);
-            //             data += chunk;
-            //         });
-
-            //         response.on('end', function() {
-            //             console.log(data);
-            //             resolve({
-            //                 questions: JSON.parse(data),
-            //                 appName: "elevate"
-            //             });
-            //         });
-                    
-            //         response.on('error', function(ex) {
-            //             reject(ex);
-            //         });
-            //     });
-            // });
         }        
     }
 
