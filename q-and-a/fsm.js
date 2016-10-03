@@ -23,7 +23,7 @@ module.exports = function(initialState) {
                     this.transition("repeatWelcome", response);
                 },
                 yes: function(response) {
-                    this.transition("step", response);
+                    this.transition("question", response);
                 },
                 no: function(response) {
                     this.transition("stop", response);
@@ -50,8 +50,8 @@ module.exports = function(initialState) {
                 repeat: function(response) {
                     this.transition("repeatQuestion", response);
                 },
-                next: function(response) {
-                    this.transition("nextQuestion", response);
+                answer: function(response) {
+                    this.transition("answer", response);
                 },
                 more: function(response) {
                     this.transition("moreInformation", response);
@@ -60,10 +60,18 @@ module.exports = function(initialState) {
                     this.transition("hint", reponse);
                 },
                 help: function(response) {
-                    this.transition("help", {response: response, step: "step"});
+                    this.transition("help", {response: response, step: "question"});
                 },
                 stop: function(response) {
                     this.transition("stop", response);
+                }
+            },
+
+            answer: {
+                _onEnter: function(response) {
+                    console.log("answer _onenter");
+                    this.emit("answer", response);
+                    this.transition("nextQuestion", response);
                 }
             },
 
@@ -72,7 +80,7 @@ module.exports = function(initialState) {
                     this.emit("moreInformation", response);
                 },
                 next: function(response) {
-                    this.transition("nextStep", response);
+                    this.transition("nextQuestion", response);
                 },
                 help: function(response) {
                     this.transition("help", {response: response, step: "moreInformation"});
@@ -87,7 +95,7 @@ module.exports = function(initialState) {
                     this.emit("hint", response);
                 },
                 next: function(response) {
-                    this.transition("nextStep", response);
+                    this.transition("nextQuestion", response);
                 },
                 help: function(response) {
                     this.transition("help", {response: response, step: "hint"});
@@ -149,8 +157,8 @@ module.exports = function(initialState) {
             this.handle("no", response)
         },
 
-        next: function(response) {
-            this.handle("next", response)
+        answer: function(response) {
+            this.handle("answer", response)
         },
 
         more: function(response) {

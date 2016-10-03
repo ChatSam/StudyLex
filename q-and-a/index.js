@@ -32,8 +32,8 @@ exports.handler = function(event, context) {
             fsm = buildFsm(responses, attributes.fsmState),
             response = responses.buildResponse();
 
-        if(intentName === "AMAZON.NextIntent") {
-            fsm.next(response);
+        if(intentName === "AnswerIntent") {
+            fsm.answer(response);
         } else if(intentName === "AMAZON.HelpIntent") {
             fsm.help(response);
         } else if(intentName === "AMAZON.RepeatIntent") {
@@ -152,6 +152,10 @@ exports.handler = function(event, context) {
 
             fsm.on('nextQuestion', function(response) {
                 responses.handleNextQuestion(response);
+            });
+
+            fsm.on('answer', function(response) {
+                responses.handleAnswer(response);
             });
 
             fsm.on('repeatQuestion', function(response) {

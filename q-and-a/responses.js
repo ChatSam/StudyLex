@@ -11,6 +11,7 @@ module.exports = function(userData, appState) {
         handleWelcome: handleWelcome,
         handleQuestion: handleQuestion,
         handleNextQuestion: handleNextQuestion,
+        handleAnswer: handleAnswer,
         handleRepeatQuestion: handleRepeatQuestion,
         handleStop: handleStop,
         handleMoreInformation: handleMoreInformation,
@@ -23,7 +24,7 @@ module.exports = function(userData, appState) {
 
     function handleWelcome(response) {
         var template = _.template(
-            "Welcome to <%- appName %>, instructions to <%- appDescription %>. Would you like to start.");
+            "Welcome to <%- appName %>, questions about <%- appDescription %>. Would you like to start?");
         var text = template({appName: userData.appName, appDescription: userData.appDescription});
         console.log(text);
         response.message.push(text);
@@ -47,12 +48,19 @@ module.exports = function(userData, appState) {
         }
 
         response.message.push(text);
-        return shouldEnd;
     }
 
     function handleNextQuestion(response) {
         self.appState.currentQuestion++;
         self.appState.hintLevel = 0;
+    }
+
+    function handleAnswer(response) {
+        var question = self.userData.cards[getCurrentQuestion()],
+            template = _.template("<%= answer %>."),
+            text = template({ answer: question.answer });
+
+        response.message.push(text);        
     }
 
     function handleRepeatQuestion(response) {
