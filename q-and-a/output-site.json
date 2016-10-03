@@ -1,24 +1,35 @@
 {
-    "appName" : "TestApp3",
-    "appDescription" : "This explain how corporations make money.",
-    "cards" : [
+    "date": "",
+    "appName": "Learing test",
+    "appDescription": "to test learning",
+    "subject": "test",
+    "help": "this is some predetermined help text that we can set",
+    "cards": [
         {
-            "question" : "what number is the best?",
-            "answer" : "number one",
-            "more" : "this is more",
-            "hints" : [
-                    "its the first number",
-                    "we got to be the best"
+            "questionNumber": "1",
+            "question": "what are you",
+            "answer": "a person",
+            "more": "we are people",
+            "hints": [ "everyone is" ]
+        },
+        {
+            "questionNumber": "2",
+            "question": "who are you",
+            "answer": "who who, who who",
+            "more": "I was sang by the who",
+            "hints": [
+                "I woke up in a Soho doorway",
+                "a policeman knew my name"
             ]
         },
         {
-            "question" : "what number is not quite the best?",
-            "answer" : "number two",
-            "more" : "this is more",
-            "hints" : [
-                    "its the second number",
-                    "if cant be the best this is close."
+            "questionNumber": "3",
+            "question": "who are you",
+            "answer": "who who, who who",
+            "more": null,
+            "hints": [
             ]
         }
-    ]
+    ],
+    "time": 1475450129851
 }

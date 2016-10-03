@@ -46,15 +46,15 @@ exports.handler = function(event, context) {
             fsm.no(response);
         } else if(intentName == "MoreInformation") {
             fsm.moreInformation(response);
-        } else if(intentName == "HelpInformation") {
+        } else if(intentName == "HintInformation") {
             fsm.hint(response);
         } else {
             context.fail("Unknown intent");
         }
 
         attributes.fsmState = fsm.state;
-        attributes.appState.currentStep = responses.getCurrentStep();
-        attributes.appState.currentMoreInformationLevel = responses.getCurrentMoreInformationLevel();
+        attributes.appState.currentQuestion = responses.getCurrentQuestion();
+        attributes.appState.currentHintLevel = responses.getCurrentHintLevel();
 
         var alexaResponse = buildAlexaResponse(event, response);
         context.succeed(alexaResponse);
@@ -68,7 +68,8 @@ exports.handler = function(event, context) {
             console.log("promise resolved");
             attributes.userData = ud;
             attributes.appState = {
-                currentStep: 0,
+                currentQuestion: 0,
+                currentHintLevel: 0,
             };
             var responses = loadResponses(
                 attributes.userData, attributes.appState); 
@@ -77,9 +78,9 @@ exports.handler = function(event, context) {
             var response = responses.buildResponse();
             fsm.start(response);
             attributes.fsmState = fsm.state;
-            attributes.appState.currentStep = responses.getCurrentStep();
-            attributes.appState.currentMoreInformationLevel = 
-            responses.getCurrentMoreInformationLevel();
+            attributes.appState.currentQuestion = responses.getCurrentQuestion();
+            attributes.appState.currentHintLevel = 
+            responses.getCurrentHintLevel();
 
             console.log(attributes);
             var alexaResponse = buildAlexaResponse(event, response);
@@ -116,8 +117,8 @@ exports.handler = function(event, context) {
         };
     }
 
-    function loadResponses(userData, currentStep) {
-        return obj = require('./responses.js')(userData, currentStep);
+    function loadResponses(userData, appState) {
+        return obj = require('./responses.js')(userData, appState);
     }
 
     function loadUserData(userData) {
@@ -127,36 +128,9 @@ exports.handler = function(event, context) {
             });
         } else {
             var fs = require('fs');
-            // var obj = JSON.parse(fs.readFileSync('user-input.json', 'utf8'));
-            
-            // return obj;
             return new Promise(function(resolve, reject) {
                 resolve(JSON.parse(fs.readFileSync('user-input.json')));
             });
-            // return new Promise(function(resolve, reject) {
-            //     var http = require('http');
-            //     http.get('http://elevate8.azurewebsites.net/flashcards/cards', response => {
-            //         console.log("response");
-            //         var data = "";
-
-            //         response.on('data', function(chunk) {
-            //             // console.log("chunk", chunk);
-            //             data += chunk;
-            //         });
-
-            //         response.on('end', function() {
-            //             console.log(data);
-            //             resolve({
-            //                 questions: JSON.parse(data),
-            //                 appName: "elevate"
-            //             });
-            //         });
-                    
-            //         response.on('error', function(ex) {
-            //             reject(ex);
-            //         });
-            //     });
-            // });
         }        
     }
 
@@ -165,34 +139,38 @@ exports.handler = function(event, context) {
             var fsmGenerator = require('./fsm.js'),
                 fsm = fsmGenerator(initialState);
 
-            fsm.on("transition", function(data) {
+            fsm.on('transition', function(data) {
             });
 
-            fsm.on("welcome", function(response) {
+            fsm.on('welcome', function(response) {
                 responses.handleWelcome(response);
             });
 
-            fsm.on("question", function(response) {
+            fsm.on('question', function(response) {
                 responses.handleQuestion(response);
             });
 
-            fsm.on("nextQuestion", function(response) {
+            fsm.on('nextQuestion', function(response) {
                 responses.handleNextQuestion(response);
             });
 
-            fsm.on("repeatQuestion", function(response) {
+            fsm.on('repeatQuestion', function(response) {
                 responses.handleRepeatQuestion(response);
             });
 
-            fsm.on("moreInformation", function(response) {
+            fsm.on('moreInformation', function(response) {
                 responses.handleMoreInformation(response);
             });
 
-            fsm.on("help", function(response) {
+            fsm.on('hint', function(response) {
+                responses.handleHint(response);
+            })
+
+            fsm.on('help', function(response) {
                 responses.handleHelp(response);
             })
 
-            fsm.on("stop", function(response) {
+            fsm.on('stop', function(response) {
                 responses.handleStop(response);
             });
 

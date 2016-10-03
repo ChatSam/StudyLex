@@ -15,13 +15,13 @@ module.exports = function(userData, appState) {
         handleStop: handleStop,
         handleMoreInformation: handleMoreInformation,
         handleHelp: handleHelp,
+        handleHint: handleHint,
         buildResponse: buildResponse,
         getCurrentQuestion: getCurrentQuestion,
-        getCurrentMoreInformationLevel: getCurrentMoreInformationLevel
+        getCurrentHintLevel: getCurrentHintLevel
     };
 
     function handleWelcome(response) {
-        //TODO build off of userData
         var template = _.template(
             "Welcome to <%- appName %>, instructions to <%- appDescription %>. Would you like to start.");
         var text = template({appName: userData.appName, appDescription: userData.appDescription});
@@ -30,16 +30,16 @@ module.exports = function(userData, appState) {
     }
 
     function handleQuestion(response) {
-        console.log('handle step');
+        console.log('handle question');
         
         console.log(self.userData);
-        console.log(getCurrentStep());
-        var step = self.userData.steps[getCurrentStep()];
+        console.log(getCurrentQuestion());
+        var question = self.userData.cards[getCurrentQuestion()];
 
         var text;
-        if(step) {
-            var template = _.template("Step <%= num %>. <%= step %>.");
-            text = template({ num: step.num, step: step.step });
+        if(question) {
+            var template = _.template("<%= question %>.");
+            text = template({ question: question.question });
         } else {
             var template = _.template("Thank you for using <%= appName %>.");
             text = template({appName: userData.appName });
@@ -51,31 +51,31 @@ module.exports = function(userData, appState) {
     }
 
     function handleNextQuestion(response) {
-        self.appState.currentStep++;
-        self.appState.moreInformationLevel = 0;
+        self.appState.currentQuestion++;
+        self.appState.hintLevel = 0;
     }
 
     function handleRepeatQuestion(response) {
     }
 
-    function handleMoreInformation(response) {
-        console.log('moreInformation');
+    function handleHint(response) {
+        console.log('hint');
        
         console.log(self.userData);
-        console.log(getCurrentStep());
+        console.log(getCurrentQuestion());
 
-        var step = self.userData.steps[getCurrentStep()],
-            moreInfoLevel = getCurrentMoreInformationLevel(),
-            moreInfo = step.help[moreInfoLevel];
+        var question = self.userData.cards[getCurrentQuestion()],
+            hintLevel = getCurrentHintLevel(),
+            hint = question.hints[hintLevel];
 
         var text;
-        if(moreInfo) {
-            text = moreInfo.text;
+        if(hint) {
+            text = hint;
         } else {
-            if(moreInfoLevel == 0) {
-                text = "No additional information for this step";
+            if(hintLevel == 0) {
+                text = "No hints for this question";
             } else {
-                text = "No more additional information for this step";
+                text = "No more hints for this question";
             }
         }
 
@@ -83,7 +83,13 @@ module.exports = function(userData, appState) {
     }
 
     function handleHelp(response) {
+        response.message.push(self.userData.help);
+    }
 
+    function handleMoreInformation(response) {
+        var card = self.userData.cards[getCurrentQuestion()];
+        
+        response.message.push(card.more);
     }
 
     function handleStop(response) {
@@ -101,6 +107,10 @@ module.exports = function(userData, appState) {
     }
 
     function getCurrentQuestion() {
-        return self.appState.currentStep;
+        return self.appState.currentQuestion;
+    }
+
+    function getCurrentHintLevel() {
+        return self.appState.getCurrentHintLevel;
     }
 }
