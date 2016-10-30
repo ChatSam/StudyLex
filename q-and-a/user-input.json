@@ -3,7 +3,6 @@
     "appName": "Learning test",
     "appDescription": "to test learning",
     "subject": "test",
-    "help": "You can say answer to get this answer for this question and advance to the next question. For any question, you can ask for it to be repeated, for a hint, or for more information. ",
     "cards": [
         {
             "questionNumber": "1",
