@@ -61,10 +61,13 @@ module.exports = function(userData, appState) {
     }
 
     function isActivityValid(activity) {
-        _.some(self.userData.activities, (x) => {
-            console.log(x);
-            x.activity == activity
+        console.log("isActivityValid", activity);
+        var y = _.some(self.userData.activities, (x) => {
+            console.log(x, x.activity == activity);
+            return x.activity == activity;
         });
+        console.log("wasSomeActivityValid", y);
+        return y;
     }
 
     function handleUnknownActivity() {

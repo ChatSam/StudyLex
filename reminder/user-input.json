@@ -4,6 +4,6 @@
     "activities": [
         { "activity": "ride a bike" },
         { "activity": "run" },
-        { "activity": "lift weights" }
+        { "activity": "lift weights"}
     ]
 }

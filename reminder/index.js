@@ -10,6 +10,7 @@ exports.handler = function(event, context) {
 
     // probably a better way to handle this
     event.session.attributes = initialize(event.session.attributes);
+    console.log("init", event.session.attributes);
 
     if (event.session.new) {
     }
@@ -22,11 +23,12 @@ exports.handler = function(event, context) {
 
     function handleIntentRequest(event, context) {
         console.log('intent request');
-        console.log(event);
+        console.log('attributes', event.session.attributes);
         var intent = event.request.intent,
             intentName = intent.name,
             attributes = event.session.attributes,
-            responses = loadResponses(attributes.userData, attributes.appState);
+            responses = loadResponses(attributes.userData, attributes.appState),
+            activity = intent.slots.activity.value;
 
         var response;
         if(intentName == 'AMAZON.HelpIntent') {
@@ -40,7 +42,8 @@ exports.handler = function(event, context) {
         }
 
         console.log(attributes);
-        context.succeed(buildAlexaResponse(response));
+        console.log('response', response);
+        context.succeed(buildAlexaResponse(event, response));
     }
 
     function handleLaunchRequest(event, context) {
@@ -49,13 +52,12 @@ exports.handler = function(event, context) {
         var responses = loadResponses(attributes.userData, attributes.appState),
             response = responses.handleHelp();
 
-        context.succeed(buildAlexaResponse(response));
+        context.succeed(buildAlexaResponse(event, response));
     }
 
     function buildAlexaResponse(event, response) {
-        var msg = _.join(response.message, ' '),
-            template = _.template('<speak><%- msg %></speak>'),
-            output = template({msg: msg});
+        var template = _.template('<speak><%- msg %></speak>'),
+            output = template({msg: response.message});
 
         return {
             version: '1.0',
@@ -77,8 +79,8 @@ exports.handler = function(event, context) {
         };
     }
 
-    function loadResponses(userData) {
-        return obj = require('./responses.js')(userData);
+    function loadResponses(userData, appState) {
+        return obj = require('./responses.js')(userData, appState);
     }
 
     function loadUserData(userData) {
@@ -92,15 +94,17 @@ exports.handler = function(event, context) {
 
     function initialize(attributes) {
         var attributes = event.session.attributes || {};
-        event.session.attributes = attributes;
 
         var userData = loadUserData(attributes.userData);
         attributes.userData = userData;
 
         attributes.appState = attributes.appState || {};
-        _.forEach(userData.activities, x => {
-            console.log('activity setup', x);
-            attributes.appState[x.activity] = undefined;
-        });
+        attributes.appState.activities = attributes.appState.activities || {};
+        // _.forEach(userData.activities, x => {
+        //     console.log('activity setup', x);
+        //     attributes.appState.activities[x.activity] = undefined;
+        // });
+
+        return attributes;
     }
 };
