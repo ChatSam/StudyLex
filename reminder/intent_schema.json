@@ -4,10 +4,22 @@
             "intent": "AMAZON.HelpIntent"
         },
         {
-            "intent": "ActivityCompleteIntent"
+            "intent": "ActivityCompleteIntent",
+            "slots": [
+                {
+                    "name": "activity",
+                    "type": "activityList"
+                }
+            ]
         },
         {
-            "intent": "ActivityInquiryIntent"
+            "intent": "ActivityInquiryIntent",
+            "slots": [
+                {
+                    "name": "activity",
+                    "type": "activityList"
+                }
+            ]
         }
     ]
 }
