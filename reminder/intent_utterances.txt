@@ -1,0 +1,7 @@
+AMAZON.HelpIntent Help
+AMAZON.HelpIntent Help please
+AMAZON.HelpIntent Please help 
+
+ActivityCompleteIntent I just did {activity}
+
+ActivityInquiryIntent Have I done {activity}

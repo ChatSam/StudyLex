@@ -1,0 +1,9 @@
+{
+    "appName": "My Fitness Pal",
+    "appDescription": "Keep me from getting fat",
+    "activities": [
+        { "activity": "ride a bike" },
+        { "activity": "run" },
+        { "activity": "lift weights" }
+    ]
+}
