@@ -44,6 +44,8 @@ exports.handler = function(event, context) {
             fsm.yes(response);
         } else if(intentName === "AMAZON.NoIntent") {
             fsm.no(response);
+        } else if(intentName == "AMAZON.CancelIntent") {
+            cancel(response);
         } else if(intentName == "MoreInformationIntent") {
             fsm.more(response);
         } else {
@@ -114,6 +116,10 @@ exports.handler = function(event, context) {
                 shouldEndSession: response.shouldEnd
             },
         };
+    }
+
+    function cancel(response) {
+        response.shouldEnd = true;
     }
 
     function loadResponses(userData, currentStep) {
