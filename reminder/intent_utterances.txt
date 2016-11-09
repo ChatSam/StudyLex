@@ -5,3 +5,4 @@ AMAZON.HelpIntent Please help
 ActivityCompleteIntent I just did {activity}
 
 ActivityInquiryIntent Have I done {activity}
+

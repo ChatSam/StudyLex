@@ -1,67 +1,103 @@
+
+
+// currently the session is being dropped everytime because the 
+// responses are set to shouldEnd = true -- this deletes the session
+// we'll need to save these values in a db to combat this
+
+
+
+
+
 exports.handler = function(event, context) {
-    var _ = require('lodash');
+    // router.put('/:userId/:taskId/:activity', {
+        
+    // });
 
-    var template = _.template('applicationId: <%- appId %> || requestId: <%- reqId %> || sessionId: <%- sessId %>');
-    console.log(template({ 
-        appId: event && event.session && event.session.application && event.session.application.applicationId,
-        reqId: event && event.request && event.request.requestId,
-        sessId: event && event.session && event.session.sessionId
-    }));
+    var http = require('http');
 
-    // probably a better way to handle this
-    event.session.attributes = initialize(event.session.attributes);
-    console.log("init", event.session.attributes);
+    var appOwner = '5811737552281302f080dd4d';
+    var taskId = '581a2ff198bd9c065846c13c';
+    var activity = 'Clean the Dishes';
+    var path = encodeURIComponent('/' + appOwner + '/' + taskId + '/' + activity);
 
-    if (event.session.new) {
-    }
+    http.get({
+        hostname: 'dev.elev8learning.co',
+        port: 80,
+        path: path,
+        agent: false  // create a new agent just for this one request
+    }, (res) => {
+        console.log(res);
+        var alexaResponse = buildAlexaResponse(attributes, {
+            message: 'it worked!',
+            shouldEnd: true
+        });
+        context.succeed(alexaResponse);
+        return;
+    });
+    
+    // var _ = require('lodash');
 
-    if(event.request.type === 'LaunchRequest') {
-        handleLaunchRequest(event, context);
-    } else if(event.request.type === 'IntentRequest') {
-        handleIntentRequest(event, context);
-    }
+    // var template = _.template('applicationId: <%- appId %> || requestId: <%- reqId %> || sessionId: <%- sessId %>');
+    // console.log(template({ 
+    //     appId: event && event.session && event.session.application && event.session.application.applicationId,
+    //     reqId: event && event.request && event.request.requestId,
+    //     sessId: event && event.session && event.session.sessionId
+    // }));
 
-    function handleIntentRequest(event, context) {
-        console.log('intent request');
-        console.log('attributes', event.session.attributes);
-        var intent = event.request.intent,
-            intentName = intent.name,
-            attributes = event.session.attributes,
-            responses = loadResponses(attributes.userData, attributes.appState),
-            activity = intent.slots.activity.value;
+    // // probably a better way to handle this
+    // console.log('start', event.session.attributes);
+    // event.session.attributes = initialize(event.session.attributes);
+    // console.log("init", event.session.attributes);
 
-        var response;
-        if(intentName == 'AMAZON.HelpIntent') {
-            response = responses.handleHelp();   
-        } else if(intentName == 'ActivityCompleteIntent') {
-            response = responses.handleActivityComplete(activity);
-        } else if(intentName == 'ActivityInquiryIntent') {
-            response = responses.handleActivityInquiry(activity);
-        } else {
-            response = responses.handleUnknownIntent();
-        }
+    // if (event.session.new) {
+    // }
 
-        console.log(attributes);
-        console.log('response', response);
-        context.succeed(buildAlexaResponse(event, response));
-    }
+    // if(event.request.type === 'LaunchRequest') {
+    //     handleLaunchRequest(event, context);
+    // } else if(event.request.type === 'IntentRequest') {
+    //     handleIntentRequest(event, context);
+    // }
+
+    // function handleIntentRequest(event, context) {
+    //     console.log('intent request');
+    //     console.log('attributes', event.session.attributes);
+    //     var intent = event.request.intent,
+    //         intentName = intent.name,
+    //         attributes = event.session.attributes,
+    //         responses = loadResponses(attributes.userData),
+    //         activity = intent.slots.activity.value;
+
+    //     var response;
+    //     if(intentName == 'AMAZON.HelpIntent') {
+    //         response = responses.handleHelp();   
+    //     } else if(intentName == 'ActivityCompleteIntent') {
+    //         response = responses.handleActivityComplete(activity);
+    //     } else if(intentName == 'ActivityInquiryIntent') {
+    //         response = responses.handleActivityInquiry(activity);
+    //     } else {
+    //         response = responses.handleUnknownIntent();
+    //     }
+
+    //     console.log(attributes);
+    //     console.log('response', response);
+    //     context.succeed(buildAlexaResponse(attributes, response));
 
     function handleLaunchRequest(event, context) {
         console.log('handle launch');
 
-        var responses = loadResponses(attributes.userData, attributes.appState),
+        var responses = loadResponses(attributes.userData),
             response = responses.handleHelp();
 
         context.succeed(buildAlexaResponse(event, response));
     }
 
-    function buildAlexaResponse(event, response) {
+    function buildAlexaResponse(attributes, response) {
         var template = _.template('<speak><%- msg %></speak>'),
             output = template({msg: response.message});
 
         return {
             version: '1.0',
-            sessionAttributes: event.session.attributes,
+            sessionAttributes: attributes,
             response: {
                 outputSpeech: {
                     type: 'SSML',
@@ -79,8 +115,8 @@ exports.handler = function(event, context) {
         };
     }
 
-    function loadResponses(userData, appState) {
-        return obj = require('./responses.js')(userData, appState);
+    function loadResponses(userData) {
+        return obj = require('./responses.js')(userData);
     }
 
     function loadUserData(userData) {
@@ -93,17 +129,11 @@ exports.handler = function(event, context) {
     }
 
     function initialize(attributes) {
-        var attributes = event.session.attributes || {};
+        console.log('initiazlie', attributes);
+        var attributes = attributes || {};
 
         var userData = loadUserData(attributes.userData);
         attributes.userData = userData;
-
-        attributes.appState = attributes.appState || {};
-        attributes.appState.activities = attributes.appState.activities || {};
-        // _.forEach(userData.activities, x => {
-        //     console.log('activity setup', x);
-        //     attributes.appState.activities[x.activity] = undefined;
-        // });
 
         return attributes;
     }

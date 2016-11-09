@@ -1,17 +1,16 @@
-module.exports = function(userData, appState) {
+module.exports = function(userData) {
     console.log('responses file');
-    console.log(userData, appState);
+    console.log(userData);
     var _ = require('lodash'),
         self = this;
     
-    self.appState = appState;
     self.userData = userData;
 
     return {
         handleActivityComplete: handleActivityComplete,
         handleActivityInquiry: handleActivityInquiry,
         handleHelp: handleHelp,
-        handleUnknownActivity: handleUnknownActivity
+        handleUnknownActivity: handleUnknownActivity,
     };
 
     function handleActivityComplete(activity) {
@@ -76,15 +75,15 @@ module.exports = function(userData, appState) {
     }
 
     function markActivityComplete(activity) {
-        var now = new Date();
-        console.log('activity finished:', activity, now);
-        self.appState.activities[activity] = now;
+        // var now = new Date();
+        // console.log('activity finished:', activity, now);
+        // self.appState.activities[activity] = now;
     }
 
     function isActivityCompleteToday(activity) {
-        var last = self.appState.activities[activity];
-        var today = new Date();
-        console.log('date compare:', last, last.getDay(), today, today.getDay());
-        return last && (last.getDay() == today.getDay());
+        // var last = self.appState.activities[activity];
+        // var today = new Date();
+        // console.log('date compare:', last, last && last.getDay(), today, today.getDay());
+        // return last && (last.getDay() == today.getDay());
     }
 }
