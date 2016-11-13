@@ -1,7 +1,28 @@
 'use strict';
 
+//////////////
+// we use use `function(data)` vs `(data) =>` in the methods set on
+// the fsm below because we want `this` to be bound at call time 
+// to the new fsm. 
+//
+// Why? Machina takes the object you create, then places all of the
+// functions you declare onto a new fsm (using `_.extend()`). We want
+// references to `this` to bind to the new fsm that machina creates. 
+// However, if we use `() =>` structure, `this` is bound at 
+// declaration, which points to the object we created, even after
+// these functions are extended onto the machina fsm. Therefore, we
+// use the `function()` format, which causes `this` to be bound at
+// the time the function is called, which will bind `this` to the 
+// newly created machina fsm. 
+//
+// for more info: 
+// - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this
+// - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
+//////////////
+
 module.exports = (function() {
-    var machina = require('machina');
+    var machina = require('machina'),
+        _ = require('lodash');
 
     var states = [];
 
@@ -70,47 +91,37 @@ module.exports = (function() {
             initialState: "initialState", //TODO ??
         };
 
-        //TODO switch to lodash, handles closures too
-        for(var i = 0; i < actions.length; i++) {
-            let action = actions[i];
-            // use function(data) vs (data) => 
-            // because we don't want `this` to be bound
+        _.each(actions, (action) => {
             fsmData[action] = function(data) {
                 this.handle(action, data);
             };
-        }
+        });
 
-        //TODO switch to lodash, handles closures too
-        var fsmStates = {};
-        for(var i = 0; i < states.length; i++) {
-            let state = states[i];
+        fsmData.states = _.reduce(states, (fsmStates, state) => {
             let fsmState = {
-                // use function(data) vs (data) => 
-                // because we don't want `this` to be bound
                 _onEnter: function(data) {
                     this.emit(state.name, data);
                 }
             };
 
             if(state.transitions) {
-                for(var j = 0; j < state.transitions.length; j++) {
-                    let transition = state.transitions[j];
+                // sets properties onto fsmState
+                _.reduce(state.transitions, (fsmState, transition) => {
                     if(transition.type === "standard") {
-                        // use function(data) vs (data) => 
-                        // because we don't want `this` to be bound
                         fsmState[transition.intent] = function(data) {
-                            console.log(transition.intent, transition.state);
                             this.transition(transition.state, data);
                         };
                     } else {
                         throw "uknown transition type";
                     }
-                }
+                    return fsmState;
+                }, fsmState);
             }
+            
             fsmStates[state.name] = fsmState;
-        }
-        fsmData.states = fsmStates;
-        console.log(fsmData);
+            return fsmStates;
+        }, {});
+
         return new machina.Fsm(fsmData);
     }
 })();
