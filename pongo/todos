@@ -15,12 +15,6 @@ how to handle persistent data
 what transition types are there 
 -   standard, loopback, other?
 
-how does js handle this -- not set correctly when being passed
-through to a builder fsm
-
-does machina have builder based patterns already?
--   worth checking for sure
-
 a big builder with
 -   an fsm builder
 -   a response builder

@@ -25,6 +25,7 @@ module.exports = (function() {
         _ = require('lodash');
 
     var states = [];
+    var intents = [];
 
     return {
         registerState: registerState,
@@ -41,47 +42,18 @@ module.exports = (function() {
      * - transitions: obj[] { type, state }
      */
     function registerState(state) {
-        states.add(state);
+        states.push(state);
     }
 
     function registerIntent(intent) {
         //TODO does this also do utterances?
+        intents.push(intent);
     }
 
     // where do we build message, is it in state, or in transition?
     // how does this intersect with global transitions and loop transitions?
 
     function buildFsm() {
-        // build action list (as intent)
-        // where to host the messages?
-        // separate file? -- yes, only build fsm here
-
-        //TODO build from states
-        var actions = ["AMAZON.NoIntent", "AMAZON.YesIntent"];
-        var states = [
-            {
-                name: "initialState",
-                transitions: [
-                    { 
-                        type: "standard", 
-                        intent: "AMAZON.NoIntent",
-                        state: "no"
-                    },
-                    { 
-                        type: "standard", 
-                        intent: "AMAZON.YesIntent",
-                        state: "yes"
-                    },
-                ]
-            },
-            {
-                name: "yes",
-            },
-            {
-                name: "no"
-            }
-        ];
-
         var fsmData = {
             initialize: function() {
                 //TODO anything here?
@@ -91,9 +63,9 @@ module.exports = (function() {
             initialState: "initialState", //TODO ??
         };
 
-        _.each(actions, (action) => {
-            fsmData[action] = function(data) {
-                this.handle(action, data);
+        _.each(intents, (intent) => {
+            fsmData[intent] = function(data) {
+                this.handle(intent, data);
             };
         });
 
@@ -117,7 +89,7 @@ module.exports = (function() {
                     return fsmState;
                 }, fsmState);
             }
-            
+
             fsmStates[state.name] = fsmState;
             return fsmStates;
         }, {});

@@ -1,10 +1,20 @@
-var fb = require('./fsm-builder.js');
+var fsmBuilder = require('./fsm-builder'),
+    states = require('./states'),
+    intents = require('./intents')
+    _ = require('lodash');
 
-var fsm = fb.buildFsm();
+_.each(states, (state) => {
+    fsmBuilder.registerState(state);
+});
+
+_.each(intents, (intent) => {
+    fsmBuilder.registerIntent(intent);
+});
+
+var fsm = fsmBuilder.buildFsm();
 
 console.log(fsm.state);
 
-fsm["AMAZON.NoIntent"]();
-// fsm.AMAZON_YesIntent();
+fsm["AMAZON.YesIntent"]();
 
 console.log(fsm.state);
