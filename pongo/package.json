@@ -1,0 +1,15 @@
+{
+  "name": "pongo",
+  "version": "0.0.1",
+  "description": "Alexa skill generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ryan echternacht",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.16.6",
+    "machina": "^2.0.0"
+  }
+}

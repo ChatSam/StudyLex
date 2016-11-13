@@ -1,0 +1,33 @@
+how to handle fsm vs. data
+
+how to load data
+
+how to handle errors at a global level
+
+how to handle temporary data (so you can handle a state differently
+depending on how you got there)
+-   also, what data should be provided by the library on each call
+
+how to handle persistent data 
+-   i think its persist everything that's already persisted + whatever
+    is marked for persistence by the user
+
+what transition types are there 
+-   standard, loopback, other?
+
+how does js handle this -- not set correctly when being passed
+through to a builder fsm
+
+does machina have builder based patterns already?
+-   worth checking for sure
+
+a big builder with
+-   an fsm builder
+-   a response builder
+
+for intent names like "AMAZON.YesIntent" do we want
+-   to access the name via [] e.g. fsm[intent]()
+-   rewrite names - change to AMAZON_YesIntent 
+-   I'm feeling the first one? but not sure why
+    - ask jeff?
+
