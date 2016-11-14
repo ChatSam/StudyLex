@@ -33,14 +33,6 @@ module.exports = (function() {
         buildFsm: buildFsm
     };
 
-    /**
-     * a state has: 
-     * - name
-     * - onEnter( ?? )
-     * - onExit( ?? )
-     * - loadData( ?? )
-     * - transitions: obj[] { type, state }
-     */
     function registerState(state) {
         states.push(state);
     }
@@ -79,7 +71,7 @@ module.exports = (function() {
             if(state.transitions) {
                 // sets properties onto fsmState
                 _.reduce(state.transitions, (fsmState, transition) => {
-                    if(transition.type === "standard") {
+                    if(transition.kind === "standard") {
                         fsmState[transition.intent] = function(data) {
                             this.transition(transition.state, data);
                         };

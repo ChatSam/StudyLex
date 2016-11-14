@@ -4,12 +4,12 @@ module.exports = {
             name: "initialState",
             transitions: [
                 { 
-                    type: "standard", 
+                    kind: "standard", 
                     intent: "AMAZON.NoIntent",
                     state: "no"
                 },
                 { 
-                    type: "standard", 
+                    kind: "standard", 
                     intent: "AMAZON.YesIntent",
                     state: "yes"
                 },
