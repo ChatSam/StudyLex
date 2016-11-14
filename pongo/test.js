@@ -1,5 +1,6 @@
 var director = require('./app-director'),
-    userData = require('./user-data')
+    userData = require('./user-data'),
+    requestDataBuilder = require('./request-builder'),
     _ = require('lodash');
 
 director.loadUserStructure(userData);
@@ -9,7 +10,7 @@ var app = director.buildAlexaApp(),
 
 console.log(fsm.state);
 
-var data = {foo: 'bar'};
-fsm["AMAZON.YesIntent"](data);
+var data = requestDataBuilder.makeRequestData();
+fsm["AMAZON.NoIntent"](data);
 
-console.log(fsm.state, data);
+console.log(fsm.state, data.response.buildMessage());

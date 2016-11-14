@@ -29,4 +29,6 @@ namespace app {
     interface LoopBackTransition {
         kind: 'loopback'
     }
+
+    // other? error handling transitions?
 }

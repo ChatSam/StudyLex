@@ -31,7 +31,7 @@ module.exports = (function() {
     function registerStatesOnFsm(states, fsm) {
         _.each(states, (state) => {
             fsm.on(state.name, (data) => {
-                data.message = state.message;
+                data.response.addMessage(state.message);
             });
         });
     }
