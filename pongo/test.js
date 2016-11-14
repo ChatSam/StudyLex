@@ -9,6 +9,7 @@ var app = director.buildAlexaApp(),
 
 console.log(fsm.state);
 
-fsm["AMAZON.YesIntent"]();
+var data = {foo: 'bar'};
+fsm["AMAZON.YesIntent"](data);
 
-console.log(fsm.state);
+console.log(fsm.state, data);

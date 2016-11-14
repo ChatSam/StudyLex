@@ -21,3 +21,16 @@ a big builder with
 
 should i write this in typescript?
 
+technically, the built objects are just accessing the
+builders through closures... is this okay?
+-   prob not, but how to fix?
+    -   use immutablejs? or just clone the data?
+
+use immutable js? 
+-   i sorta want to, but don't want to get too cray
+
+define objects: 
+-   data
+-   state
+-   anything else?
+

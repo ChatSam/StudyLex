@@ -13,13 +13,16 @@ module.exports = {
                     intent: "AMAZON.YesIntent",
                     state: "yes"
                 },
-            ]
+            ],
+            message: "this is the initial state"
         },
         {
             name: "yes",
+            message: "you said yes"
         },
         {
-            name: "no"
+            name: "no",
+            message: "you said no"
         }
     ],
     intents: [

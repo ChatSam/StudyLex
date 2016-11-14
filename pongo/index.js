@@ -12,4 +12,6 @@ exports.handler = function(event, context) {
     var app = event.session.new 
         ? director.build('user-data')
         : event.session.attributes.app;
+
+    
 };

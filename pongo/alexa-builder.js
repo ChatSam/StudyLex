@@ -23,9 +23,14 @@ module.exports = (function() {
 
     function buildAlexaApp() {
         //TODO there's probably more...
+        var fsm = fsmBuilder.buildFsm(),
+            responses = responseBuilder.buildResponses();
+
+        responseBuilder.registerStatesOnFsm(responses.states, fsm);
+
         return {
-            fsm: fsmBuilder.buildFsm(),
-            responses: responseBuilder.buildResponses()
+            fsm: fsm,
+            responses: responses
         }
     }
 })();
