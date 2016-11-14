@@ -1,21 +1,15 @@
-var builder = require('./alexa-builder'),
-    states = require('./states'),
-    intents = require('./intents')
-    _ = require('lodash');
+exports.handler = function(event, context) {
+    var _ = require('lodash'),
+        director = require('./director');
 
-_.each(states, (state) => {
-    builder.registerState(state);
-});
+    // var template = _.template("applicationId: <%- appId %> || requestId: <%- reqId %> || sessionId: <%- sessId %>");
+    // console.log(template({ 
+    //     appId: event && event.session && event.session.application && event.session.application.applicationId,
+    //     reqId: event && event.request && event.request.requestId,
+    //     sessId: event && event.session && event.session.sessionId
+    // }));
 
-_.each(intents, (intent) => {
-    builder.registerIntent(intent);
-});
-
-var app = builder.buildAlexaApp(),
-    fsm = app.fsm;
-
-console.log(fsm.state);
-
-fsm["AMAZON.NoIntent"]();
-
-console.log(fsm.state);
+    var app = event.session.new 
+        ? director.build('user-data')
+        : event.session.attributes.app;
+};
