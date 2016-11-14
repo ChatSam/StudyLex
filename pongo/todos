@@ -1,8 +1,8 @@
-how to handle fsm vs. data
-
 how to load data
 
 how to handle errors at a global level
+
+how to handle 
 
 how to handle temporary data (so you can handle a state differently
 depending on how you got there)
@@ -19,9 +19,5 @@ a big builder with
 -   an fsm builder
 -   a response builder
 
-for intent names like "AMAZON.YesIntent" do we want
--   to access the name via [] e.g. fsm[intent]()
--   rewrite names - change to AMAZON_YesIntent 
--   I'm feeling the first one? but not sure why
-    - ask jeff?
+should i write this in typescript?
 

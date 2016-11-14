@@ -1,20 +1,21 @@
-var fsmBuilder = require('./fsm-builder'),
+var builder = require('./alexa-builder'),
     states = require('./states'),
     intents = require('./intents')
     _ = require('lodash');
 
 _.each(states, (state) => {
-    fsmBuilder.registerState(state);
+    builder.registerState(state);
 });
 
 _.each(intents, (intent) => {
-    fsmBuilder.registerIntent(intent);
+    builder.registerIntent(intent);
 });
 
-var fsm = fsmBuilder.buildFsm();
+var app = builder.buildAlexaApp(),
+    fsm = app.fsm;
 
 console.log(fsm.state);
 
-fsm["AMAZON.YesIntent"]();
+fsm["AMAZON.NoIntent"]();
 
 console.log(fsm.state);
