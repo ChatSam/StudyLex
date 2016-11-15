@@ -1,8 +1,10 @@
 how to load data
+-   big question, and what is supported? 
+    -   clearly local file
+    -   web request?????
+    -   does this need to be a function, or can it be an obj?
 
 how to handle errors at a global level
-
-how to handle 
 
 how to handle temporary data (so you can handle a state differently
 depending on how you got there)
@@ -15,10 +17,6 @@ how to handle persistent data
 what transition types are there 
 -   standard, loopback, other?
 
-a big builder with
--   an fsm builder
--   a response builder
-
 should i write this in typescript?
 
 technically, the built objects are just accessing the
@@ -28,9 +26,4 @@ builders through closures... is this okay?
 
 use immutable js? 
 -   i sorta want to, but don't want to get too cray
-
-define objects: 
--   data
--   state
--   anything else?
 

@@ -18,15 +18,45 @@ module.exports = {
         },
         {
             name: "yes",
-            message: "you said yes"
+            message: "you said yes",
+            transitions: [
+                {
+                    kind: "standard",
+                    intent: "GoodbyeIntent",
+                    state: "goodbye"
+                }
+            ]
         },
         {
             name: "no",
-            message: "you said no"
-        }
+            message: "you said no",
+            transitions: [
+                {
+                    kind: "standard",
+                    intent: "GoodbyeIntent",
+                    state: "goodbye"
+                }
+            ]
+        },
+        {
+            name: "goodbye",
+            message: "goodbye <%- name %>",
+            transitions: [
+                {
+                    kind: "standard",
+                    intent: "GoodbyeIntent",
+                    state: "goodbye"
+                }
+            ]
+        },
     ],
-    intents: [
+    // does this need to be explicit? probably easier with utterances...
+    intents: [ 
         "AMAZON.NoIntent", 
-        "AMAZON.YesIntent"
-    ]
+        "AMAZON.YesIntent",
+        "GoodbyeIntent"
+    ],
+    localData: {
+        name: "sue"
+    }
 };

@@ -3,9 +3,12 @@ module.exports = (function() {
     // probably need to be reworked
     
     var _ = require('lodash');
+
+    var userData = {};
     
     return {
-        makeRequestData: makeRequestData
+        makeRequestData: makeRequestData,
+        loadUserData: loadUserData
     };
 
     function makeRequestData() {
@@ -15,9 +18,12 @@ module.exports = (function() {
         }
     }
 
+    function loadUserData(ud) {
+        userData = ud;
+    }
+
     function makeLocalData() {
-        // TODO
-        return {};
+        return userData.localData;
     }
 
     function makeResponse() {
