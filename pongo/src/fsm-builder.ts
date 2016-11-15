@@ -20,57 +20,60 @@
 // - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
 //////////////
 
-module.exports = (function() {
-    var machina = require('machina'),
-        _ = require('lodash');
+import * as _ from 'lodash';
+import * as machina from 'machina';
 
-    var states = [];
-    var intents = [];
+export class FsmBuilder {
+    private states: any[];
+    private intents: any[];
 
-    return {
-        registerState: registerState,
-        registerIntent: registerIntent,
-        buildFsm: buildFsm
-    };
-
-    function registerState(state) {
-        states.push(state);
+    constructor() {
+        this.states = [];
+        this.intents = [];
     }
 
-    function registerIntent(intent) {
+    registerState(state: any): void {
+        this.states.push(state);
+    }
+
+    registerIntent(intent: any): void {
         //TODO does this also do utterances?
-        intents.push(intent);
+        this.intents.push(intent);
     }
 
-    // where do we build message, is it in state, or in transition?
     // how does this intersect with global transitions and loop transitions?
 
-    function buildFsm() {
-        var fsmData = {
+    buildFsm(): any {
+        let fsmData = {
             initialize: function() {
                 //TODO anything here?
             },
 
             namespace: "myFsm", //TODO does this matter?
             initialState: "initialState", //TODO ??
+            states: undefined,
         };
 
-        _.each(intents, (intent) => {
+        _.each(this.intents, (intent: any) => {
             fsmData[intent] = function(data) {
                 this.handle(intent, data);
             };
         });
 
-        fsmData.states = _.reduce(states, (fsmStates, state) => {
+        fsmData.states = _.reduce(this.states, 
+            (fsmStates: any, state: any) => {
+
             let fsmState = {
-                _onEnter: function(data) {
+                _onEnter: function(data: any) {
                     this.emit(state.name, data);
                 }
             };
 
             if(state.transitions) {
                 // sets properties onto fsmState
-                _.reduce(state.transitions, (fsmState, transition) => {
+                _.reduce(state.transitions, 
+                    (fsmState: any, transition: any) => {
+
                     if(transition.kind === "standard") {
                         fsmState[transition.intent] = function(data) {
                             this.transition(transition.state, data);
@@ -88,4 +91,4 @@ module.exports = (function() {
 
         return new machina.Fsm(fsmData);
     }
-})();
+}

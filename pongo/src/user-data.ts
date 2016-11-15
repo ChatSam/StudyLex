@@ -1,4 +1,4 @@
-module.exports = {
+let data = {
     states: [
         {
             name: "initialState",
@@ -60,3 +60,5 @@ module.exports = {
         name: "sue"
     }
 };
+
+export { data }

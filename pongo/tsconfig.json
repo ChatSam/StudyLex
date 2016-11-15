@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "sourceMap": false, //TODO?
+        "declaration": false, //TODO?
+        "module": "commonjs",
+        "noEmitOnError": true,
+        "noImplicitAny": false, // TODO set to true?
+        "outDir": "dist"
+        // lib?
+    },
+    "include": [
+        "custom-types/*",
+        "src/**/*"
+    ]
+}

@@ -9,7 +9,9 @@
   "author": "ryan echternacht",
   "license": "ISC",
   "dependencies": {
+    "@types/lodash": "^4.14.39",
     "lodash": "^4.16.6",
-    "machina": "^2.0.0"
+    "machina": "^2.0.0",
+    "typescript": "^2.0.9"
   }
 }

@@ -17,8 +17,6 @@ how to handle persistent data
 what transition types are there 
 -   standard, loopback, other?
 
-should i write this in typescript?
-
 technically, the built objects are just accessing the
 builders through closures... is this okay?
 -   prob not, but how to fix?
@@ -27,3 +25,11 @@ builders through closures... is this okay?
 use immutable js? 
 -   i sorta want to, but don't want to get too cray
 
+write a typings file for machina
+-   or use this one?
+    -   https://github.com/timjroberts/typescript-atomizer/blob/master/typings/machina/machina.d.ts
+
+how to enable 'noImplicitAny' to true?
+-   issue is with extending types in the fsm
+
+use the interfaces.ts file
