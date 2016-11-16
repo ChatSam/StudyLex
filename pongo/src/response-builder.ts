@@ -1,21 +1,22 @@
 'use strict';
 
 import * as _ from 'lodash';
+import { State, Intent} from './interfaces';
 
 export class ResponseBuilder {
     
-    private states: any[];
+    private states: State[];
 
     constructor() {
         this.states = [];
     }
     
-    registerState(state: any): void {
+    registerState(state: State): void {
         // TODO just grab the needed pieces?
         this.states.push(state);
     }
 
-    registerIntent(intent: any): void {
+    registerIntent(intent: Intent): void {
         //TODO is there anything here? 
         // do we need this method at all?
     }
@@ -26,9 +27,9 @@ export class ResponseBuilder {
         };
     }
 
-    registerStatesOnFsm(states: any, fsm: any): void {
-        _.each(states, (state) => {
-            fsm.on(state.name, (data) => {
+    registerStatesOnFsm(states: State[], fsm: any): void {
+        _.each(states, (state: State) => {
+            fsm.on(state.name, (data: any) => {
                 let template = _.template(state.message),
                     output = template(data.localData);
                 data.response.addMessage(output);

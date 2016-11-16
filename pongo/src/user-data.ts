@@ -1,5 +1,8 @@
-let data = {
-    states: [
+
+import { UserData, State, Intent } from './interfaces'
+
+let data = <UserData> {
+    states: <State[]>[
         {
             name: "initialState",
             transitions: [
@@ -51,12 +54,12 @@ let data = {
         },
     ],
     // does this need to be explicit? probably easier with utterances...
-    intents: [ 
-        "AMAZON.NoIntent", 
-        "AMAZON.YesIntent",
-        "GoodbyeIntent"
+    intents: <Intent[]>[ 
+        { name: "AMAZON.NoIntent" }, 
+        { name: "AMAZON.YesIntent" },
+        { name: "GoodbyeIntent" }
     ],
-    localData: {
+    localData: <any> {
         name: "sue"
     }
 };

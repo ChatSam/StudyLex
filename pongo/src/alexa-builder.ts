@@ -3,13 +3,7 @@
 import { FsmBuilder } from './fsm-builder';
 import { ResponseBuilder } from './response-builder';
 import * as _ from 'lodash';
-
-
-    // return {
-    //     registerState: registerState,
-    //     registerIntent: registerIntent,
-    //     buildAlexaApp: buildAlexaApp
-    // };
+import { State, Intent } from './interfaces';
 
 export class AlexaBuilder {
     private fsmBuilder: FsmBuilder
@@ -20,12 +14,12 @@ export class AlexaBuilder {
         this.responseBuilder = new ResponseBuilder();
     }
     
-    registerState(state: any): void {
+    registerState(state: State): void {
         this.fsmBuilder.registerState(state);
         this.responseBuilder.registerState(state);
     }
 
-    registerIntent(intent: any): void {
+    registerIntent(intent: Intent): void {
         this.fsmBuilder.registerIntent(intent);
         this.responseBuilder.registerIntent(intent);
     };

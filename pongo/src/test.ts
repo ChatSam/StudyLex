@@ -17,7 +17,7 @@ var app = director.buildAlexaApp(),
 console.log(fsm.state);
 
 var data = requestBuilder.makeRequestData();
-fsm["AMAZON.YesIntent"](data);
+fsm["AMAZON.NoIntent"](data);
 
 console.log(fsm.state, data.response.buildMessage());
 

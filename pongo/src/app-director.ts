@@ -6,6 +6,7 @@
 import { AlexaBuilder } from './alexa-builder';
 import { RequestBuilder } from './request-builder';
 import * as _ from 'lodash';
+import { UserData, State } from './interfaces'
 
 export class AppDirector {
     requestBuilder: RequestBuilder
@@ -16,12 +17,12 @@ export class AppDirector {
         this.alexaBuilder = new AlexaBuilder();
     }
     
-    loadUserStructure(userData) {
-        _.each(userData.states, (state) => {
+    loadUserStructure(userData: UserData) {
+        _.each(userData.states, (state: State) => {
             this.alexaBuilder.registerState(state);
         });
 
-        _.each(userData.intents, (intent) => {
+        _.each(userData.intents, (intent: any) => {
             this.alexaBuilder.registerIntent(intent);
         });
 

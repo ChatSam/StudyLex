@@ -22,21 +22,22 @@
 
 import * as _ from 'lodash';
 import * as machina from 'machina';
+import { State, Intent } from './interfaces'
 
 export class FsmBuilder {
-    private states: any[];
-    private intents: any[];
+    private states: State[];
+    private intents: Intent[];
 
     constructor() {
         this.states = [];
         this.intents = [];
     }
 
-    registerState(state: any): void {
+    registerState(state: State): void {
         this.states.push(state);
     }
 
-    registerIntent(intent: any): void {
+    registerIntent(intent: Intent): void {
         //TODO does this also do utterances?
         this.intents.push(intent);
     }
@@ -54,14 +55,14 @@ export class FsmBuilder {
             states: undefined,
         };
 
-        _.each(this.intents, (intent: any) => {
-            fsmData[intent] = function(data) {
-                this.handle(intent, data);
+        _.each(this.intents, (intent: Intent) => {
+            fsmData[intent.name] = function(data) {
+                this.handle(intent.name, data);
             };
         });
 
         fsmData.states = _.reduce(this.states, 
-            (fsmStates: any, state: any) => {
+            (fsmStates: any, state: State) => {
 
             let fsmState = {
                 _onEnter: function(data: any) {

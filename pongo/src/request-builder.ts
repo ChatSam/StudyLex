@@ -2,9 +2,10 @@
 // probably need to be reworked
 
 import * as _ from 'lodash';
+import { UserData } from './interfaces';
     
 export class RequestBuilder {
-    private userData: any;
+    private userData: UserData;
 
     constructor() {
     }    
@@ -16,7 +17,7 @@ export class RequestBuilder {
         }
     }
 
-    loadUserData(ud: any) {
+    loadUserData(ud: UserData) {
         this.userData = ud;
     }
 
