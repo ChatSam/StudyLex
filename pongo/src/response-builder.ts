@@ -1,10 +1,9 @@
 'use strict';
 
 import * as _ from 'lodash';
-import { State, Intent} from './interfaces';
+import { State, Intent, RequestData } from './interfaces';
 
 export class ResponseBuilder {
-    
     private states: State[];
 
     constructor() {
@@ -29,7 +28,7 @@ export class ResponseBuilder {
 
     registerStatesOnFsm(states: State[], fsm: any): void {
         _.each(states, (state: State) => {
-            fsm.on(state.name, (data: any) => {
+            fsm.on(state.name, (data: RequestData) => {
                 let template = _.template(state.message),
                     output = template(data.localData);
                 data.response.addMessage(output);

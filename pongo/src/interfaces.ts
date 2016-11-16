@@ -19,15 +19,15 @@ export interface Intent {
     name: string
 }
 
-// interface RequestData {
-//     localData: any,
-//     response: Response  
-// }
+export interface RequestData {
+    localData: any
+    response: Response  
+}
 
-// interface Response {
-//     addMessage: (s: string) => void
-//     buildMessage: () => string
-// }
+export interface Response {
+    addMessage(s: string): void
+    buildMessage(): string
+}
 
 export type Transition = StandardTransition | LoopBackTransition;
 

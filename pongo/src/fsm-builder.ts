@@ -1,5 +1,7 @@
 'use strict';
 
+// NOTE the below MAY not apply in typescript -- I'm not quite sure yet
+
 //////////////
 // we use use `function(data)` vs `(data) =>` in the methods set on
 // the fsm below because we want `this` to be bound at call time 
@@ -22,7 +24,7 @@
 
 import * as _ from 'lodash';
 import * as machina from 'machina';
-import { State, Intent } from './interfaces'
+import { State, Intent, RequestData } from './interfaces'
 
 export class FsmBuilder {
     private states: State[];
@@ -56,7 +58,7 @@ export class FsmBuilder {
         };
 
         _.each(this.intents, (intent: Intent) => {
-            fsmData[intent.name] = function(data) {
+            fsmData[intent.name] = function(data: RequestData) {
                 this.handle(intent.name, data);
             };
         });
@@ -65,7 +67,7 @@ export class FsmBuilder {
             (fsmStates: any, state: State) => {
 
             let fsmState = {
-                _onEnter: function(data: any) {
+                _onEnter: function(data: RequestData) {
                     this.emit(state.name, data);
                 }
             };
@@ -76,7 +78,7 @@ export class FsmBuilder {
                     (fsmState: any, transition: any) => {
 
                     if(transition.kind === "standard") {
-                        fsmState[transition.intent] = function(data) {
+                        fsmState[transition.intent] = function(data: RequestData) {
                             this.transition(transition.state, data);
                         };
                     } else {
